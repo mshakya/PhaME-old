@@ -1,5 +1,5 @@
-      refdir = /path/to/PhaME/test/ref  # directory where reference files are located
-      workdir = /path/to/PhaME/test # directory where contigs/reads files are located and output is stored
+      refdir = /users/312793/PhaME/git_phame/test/ref  # directory where reference files are located
+      workdir = /users/312793/PhaME/git_phame/test  # directory where contigs/reads files are located and output is stored
 
     reference = 1  # 0:pick a random reference; 1:use given reference
       reffile = KJ660347.fasta  # reference filename

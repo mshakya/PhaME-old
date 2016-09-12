@@ -66,7 +66,7 @@ class RunPhame:
         # open pipe to perl interp
         # pass multiple command line arguments to Perl scripts using perlArgs
 
-        perlDir = "/Users/nick/PycharmProjects/PhaME/perl_scripts/runNUCmer.pl"  # dir to perl scripts
+        perlDir = "/users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl"  # dir to perl scripts
         #pipe = subprocess.Popen(["perl", perl_filename, perlDir, perlArgs])
 
         args = shlex.split(perlArgs)
@@ -74,7 +74,7 @@ class RunPhame:
 
     def runNUCmer(self):
 
-        nucmer = "/Users/nick/PycharmProjects/PhaME/perl_scripts/runNUCmer.pl -q " + self.files_dir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
+        nucmer = "/users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.files_dir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
                  self.fasta_filelist + " -c " + str(self.code) + ">" + self.error_file + ">" + self.log_file
         self.perl_calls(nucmer)
 
@@ -84,11 +84,11 @@ class RunPhame:
 
     def main(self):
         # call to runNUCmer perl script
-        # self.runNUCmer()
-        pass
+        self.runNUCmer()
+       
 
 
-RunPhame() #.main()
+RunPhame()#.main()
 
 
 
