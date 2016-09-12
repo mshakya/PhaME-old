@@ -73,9 +73,11 @@ class RunPhame:
         pipe = subprocess.Popen(args, stdout=subprocess.PIPE)
 
     def runNUCmer(self):
+		# hard coding virius or bacteria since its a little off from original command
+        nucmer = "/users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
+                 self.fasta_filelist + " -c virus 2" + ">" + self.error_file + " > " + self.log_file
 
-        nucmer = "/users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.files_dir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
-                 self.fasta_filelist + " -c " + str(self.code) + ">" + self.error_file + ">" + self.log_file
+	print nucmer
         self.perl_calls(nucmer)
 
          # self.perl_calls("runNUCmer.pl", "-q", self.workdir, "-d", self.output_dir, "-t", str(self.threads), "-l",
@@ -88,7 +90,7 @@ class RunPhame:
        
 
 
-RunPhame()#.main()
+RunPhame().main()
 
 
 
