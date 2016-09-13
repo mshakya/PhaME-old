@@ -1,7 +1,0 @@
-/users/312793/PhaME/git_phame/phame/test/results/ZEBOV_2007_23Luebo_norepeats.fna /users/312793/PhaME/git_phame/phame/test/results/ZEBOV_2007_1Luebo_norepeats.fna
-NUCMER
-
-[P1]	[SUB]	[SUB]	[P2]	[BUFF]	[DIST]	[FRM]	[TAGS]
-4733	T	C	4733	4733	4733	1	1	ZEBOV_2007_23Luebo_1_18958	ZEBOV_2007_1Luebo_1_18958
-15671	C	T	15671	2881	3288	1	1	ZEBOV_2007_23Luebo_1_18958	ZEBOV_2007_1Luebo_1_18958
-18552	G	A	18552	407	407	1	1	ZEBOV_2007_23Luebo_1_18958	ZEBOV_2007_1Luebo_1_18958

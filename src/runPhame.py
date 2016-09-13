@@ -40,6 +40,15 @@ class RunPhame:
 
         self.threads = self.control_file_obj.threads  # number of threads from control file
         self.code = self.control_file_obj.code        # bacteria 0, virus 1, or Eukaryote 2
+	self.type_organism = ""
+
+	if self.code == 0:
+		self.type_organism = "bacteria"
+	elif self.code == 1:
+		self.type_organism = "virius"
+	elif self.code == 2:
+		self.type_organism = "eukaryote"
+	
 
         Check_files.CheckFile().print_current_settings()
         Check_files.LogFiles()
@@ -63,6 +72,7 @@ class RunPhame:
 
         catAlign.GeneCater().get_files(self.refdir_file_list, self.output_dir)
 
+
     def perl_calls(self, perlArgs):
         # open pipe to perl interp
         # pass multiple command line arguments to Perl scripts using perlArgs
@@ -75,29 +85,19 @@ class RunPhame:
 
     def runNUCmer(self):
 		# hard coding virius or bacteria since its a little off from original command
-        nucmer = "perl /users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
-                 self.fasta_filelist + " -c virus 2" + ">" + self.error_file + " > " + self.log_file
+        
+	
+	nucmer = "perl /users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
+                 self.fasta_filelist + " -c " + self.type_organism + "  2" + ">" + self.error_file + " > " + self.log_file
 
 	print nucmer
         self.perl_calls(nucmer)
-
-         # self.perl_calls("runNUCmer.pl", "-q", self.workdir, "-d", self.output_dir, "-t", str(self.threads), "-l",
-         #                self.fasta_filelist, "-c", str(self.code), ">", self.error_file, ">", self.log_file)
-         # comment
 
     def main(self):
         # call to runNUCmer perl script
         self.runNUCmer()
        
 
-
 RunPhame().main()
-
-
-
-
-
-
-
 
 
