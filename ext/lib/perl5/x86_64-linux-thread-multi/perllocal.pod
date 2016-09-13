@@ -1,0 +1,22 @@
+=head2 Tue Aug 23 09:04:17 2016: C<Module> L<Statistics::Distributions|Statistics::Distributions>
+
+=over 4
+
+=item *
+
+C<installed into: /panfs/biopan01/users/312793/PhaME/ext/lib/perl5>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.02>
+
+=item *
+
+C<EXE_FILES: >
+
+=back
+

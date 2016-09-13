@@ -76,7 +76,8 @@ class GetInputFiles:
                         catAlign.GeneCater().get_files(file, directory)
 
                         contig_list = open(workdir+"/files/contig_filelist.txt", "a")
-                        contig_list.writelines(file + "\n")
+			filename = file.split(".")[0]
+                        contig_list.writelines(filename + "\n")
 
                     elif file.split(".")[1] == "fastq" or file.split(".")[1] == "fa" \
                             or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
@@ -85,7 +86,8 @@ class GetInputFiles:
 
                         file_list.append(os.path.join(workdir+"/files/", file))
                         fasta_list = open(workdir+"/files/fasta_filelist.txt", "a")
-                        fasta_list.writelines(file + "\n")
+			filename = file.split(".")[0]
+                        fasta_list.writelines(filename + "\n")
 
                         # add full filepath to a list. use that list to access files when needed
         else:

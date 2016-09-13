@@ -21,6 +21,7 @@ import catAlign
 import shlex
 import subprocess
 import os
+import commands
 
 class RunPhame:
 
@@ -42,8 +43,8 @@ class RunPhame:
 
         Check_files.CheckFile().print_current_settings()
         Check_files.LogFiles()
-        self.log_file = self.output_dir+"logFile.txt"      # log file to record all messages
-        self.error_file = self.output_dir+"Error.txt"      # log file to record errors
+        self.log_file = self.output_dir+"/"+"logFile.txt"      # log file to record all messages
+        self.error_file = self.output_dir+"/"+"Error.txt"      # log file to record errors
 
         get_input_obj = Check_files.GetInputFiles()  # class instance obj
 
@@ -69,12 +70,12 @@ class RunPhame:
         perlDir = "/users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl"  # dir to perl scripts
         #pipe = subprocess.Popen(["perl", perl_filename, perlDir, perlArgs])
 
-        args = shlex.split(perlArgs)
-        pipe = subprocess.Popen(args, stdout=subprocess.PIPE)
+        #args = shlex.split(perlArgs)
+        commands.getstatusoutput(perlArgs)
 
     def runNUCmer(self):
 		# hard coding virius or bacteria since its a little off from original command
-        nucmer = "/users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
+        nucmer = "perl /users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
                  self.fasta_filelist + " -c virus 2" + ">" + self.error_file + " > " + self.log_file
 
 	print nucmer

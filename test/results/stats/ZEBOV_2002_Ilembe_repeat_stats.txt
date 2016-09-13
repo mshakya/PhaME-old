@@ -1,0 +1,4 @@
+
+ZEBOV_2002_Ilembe size:	18958
+Repeats segment #:	0
+Repeats total length:	0 (0.00%)
