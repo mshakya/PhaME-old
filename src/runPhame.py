@@ -46,6 +46,9 @@ class RunPhame:
 
         self.threads = self.control_file_obj.threads  # number of threads from control file
         self.code = self.control_file_obj.code        # bacteria 0, virus 1, or Eukaryote 2
+        self.project_name = self.control_file_obj.project_name
+
+
         self.type_organism = ""
         self.project_name = self.control_file_obj.project_name
         
@@ -118,9 +121,9 @@ class RunPhame:
     def buildSNPDB(self):
         print "\n"
 
-        buildSNPDB = "perl " + self.output_dir + " " + self.perldir + " " + self.ref_file + " " + self.working_list + " " + self.project_name + " " + self.cdsSNPs + " " + self.error_file + self.log_file
+        buildSNPDB = "perl " self.perldir+"buildSNPDB.pl -i" + self.output_dir + " -r " + self.ref_file + " l " + self.working_list + " -p " + self.project_name + " -c " + str(self.cdsSNPs) + "2>>"+self.error_file + " >> " + self.log_file
+        
         print buildSNPDB + "\n"
-
         self.perl_calls(buildSNPDB)
         
 
@@ -128,7 +131,9 @@ class RunPhame:
         # call to runNUCmer perl script
         #self.runNUCmer()
         #self.runContigNUCmer()
-        self.identifyGaps()
+        #self.identifyGaps()
+        self.buildSNPDB()
+
 
 RunPhame().main()
 
