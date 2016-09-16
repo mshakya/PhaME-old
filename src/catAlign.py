@@ -66,7 +66,9 @@ class GeneCater:
             self.gene_map[name] = curr_val + value
 
     def write_to_file(self, output_dir, filename):
-
+        
+        filename = filename.split(".")[0]
+        filename += ".fna"
         new_file = open(output_dir+filename, "w+")
 
         new_file.writelines(self.gene_map.keys()[0].split()[0] + "\n")

@@ -49,17 +49,18 @@ class LogFiles:
 class GetInputFiles:
 
     #TODO first send file to catAlign. then have file added to the filelist. BOTH file and filelist should go to output/files
+    
+    def __init__(self):
+        control_obj = read_control.ParseFile()
+        control_obj.read_file()
+        self.workdir = control_obj.workdir
 
     def get_input_files(self, directory):
 
-        control_obj = read_control.ParseFile()
-        control_obj.read_file()
-        workdir = control_obj.workdir
-
-        if os.path.exists(workdir + "/files"):
+        if os.path.exists(self.workdir + "/files"):
             pass
         else:
-            os.makedirs(workdir + "/files")
+            os.makedirs(self.workdir + "/files")
 
         file_list = []
 
@@ -75,15 +76,19 @@ class GetInputFiles:
                         contig_file = os.path.join(directory,file)
 
                         #create list of contig files for perl scripts to use
-                        contig_list = open(workdir+"/files/contig_filelist.txt", "a")
+                        contig_list = open(self.workdir+"/contig_filelist.txt", "a")
                         filename = file.split(".")[0]
+                        filename += "_contig"
                         contig_list.writelines(filename + "\n")
 
                         # need to move contig files from workdir to workdir/files.
                         # open a file handle on current contig file.
                         # create a file with the same file name in /files
                         # as you read from original file. write to new file in /files
-                        output_contig_file_handle = open(workdir+"/files/"+file, "w")
+
+                        file = file.split(".")[0]
+                        file += "_contig.fna"
+                        output_contig_file_handle = open(self.workdir+"/files/"+file, "w")
                         contig_file_handle = open(contig_file, "r")
                         for line in contig_file_handle:
                             output_contig_file_handle.writelines(line)
@@ -94,9 +99,9 @@ class GetInputFiles:
 
                         catAlign.GeneCater().get_files(file, directory)  # send file to get cated
 
-                        file_list.append(os.path.join(workdir+"/files/", file))
-                        fasta_list = open(workdir+"/files/fasta_filelist.txt", "a")
-			filename = file.split(".")[0]
+                        file_list.append(os.path.join(self.workdir+"/files/", file))
+                        fasta_list = open(self.workdir+"/fasta_filelist.txt", "a")
+                        filename = file.split(".")[0]
                         fasta_list.writelines(filename + "\n")
 
                         # add full filepath to a list. use that list to access files when needed
@@ -109,5 +114,15 @@ class GetInputFiles:
 
         return file_list
 
+    def create_working_list(self):
 
+        fasta_list = open(self.workdir+"/fasta_filelist.txt", "r")
+        contig_list = open(self.workdir+"/contig_filelist.txt", "r")
+
+        working_list = open(self.workdir+"/working_list.txt", "a")
+
+        for line in fasta_list:
+            working_list.writelines(line)
+        for line in contig_list:
+            working_list.writelines(line)
 
