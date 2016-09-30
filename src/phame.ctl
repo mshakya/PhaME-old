@@ -6,7 +6,7 @@
 
       project = snp_alignment  # project name, output files will have project name as suffix
 
-      cdsSNPS = 1  # 0:no cds SNPS; 1:cds SNPs
+      cdsSNPS = 0  # 0:no cds SNPS; 1:cds SNPs
 
     FirstTime = 1  # 1:yes; 2:update existing SNP alignment
 

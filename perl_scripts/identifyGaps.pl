@@ -85,5 +85,5 @@ while (my $repeats= readdir(REPEAT)){
     }
 }
 closedir REPEAT;
-return $all_gapfile;
-}
+print $all_gapfile;
+

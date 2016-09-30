@@ -36,13 +36,15 @@ class RunPhame:
         self.workdir = self.control_file_obj.workdir  # create working directory var to be used later
         self.refdir = self.control_file_obj.refdir    # create reference directory var to be used later
         self.cdsSNPs = self.control_file_obj.cdsSNPS
+        self.tree = self.control_file_obj.tree
 	    
 	    # TODO perldir needs to not be hard codeded. Not sure how to auto grab this since is depends on install location
         self.perldir = "/users/312793/PhaME/git_phame/phame/perl_scripts/"  # dir to perl scripts
 
         self.output_dir = self.workdir+"/results"       # create output directory var to be used later
         
-        self.ref_file = self.control_file_obj.reffile
+        self.ref_file = self.refdir+"/"+ self.control_file_obj.reffile
+        self.ref_file_name = self.control_file_obj.reffile
 
         self.threads = self.control_file_obj.threads  # number of threads from control file
         self.code = self.control_file_obj.code        # bacteria 0, virus 1, or Eukaryote 2
@@ -61,6 +63,7 @@ class RunPhame:
 	
 
         Check_files.CheckFile().print_current_settings()
+        Check_files.CheckFile().clean_files()
         Check_files.LogFiles()
         self.log_file = self.output_dir+"/"+"logFile.txt"      # log file to record all messages
         self.error_file = self.output_dir+"/"+"Error.txt"      # log file to record errors
@@ -94,7 +97,8 @@ class RunPhame:
 
     def runNUCmer(self):
 		# hard coding virius or bacteria since its a little off from original command
-        print "\n"
+        
+        print "Running NUCmer \n"
         nucmer = "perl /users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
                  self.fasta_filelist + " -c " + self.type_organism + "  2" + ">" + self.error_file + " > " + self.log_file
         print nucmer
@@ -109,31 +113,65 @@ class RunPhame:
         print contigNUCmer + "\n"
         self.perl_calls(contigNUCmer)
 
+        #TODO not working
+    def readMapping(self):
+        print "Mapping reads to reference  \n "
+        #readMapping = "perl " + self.perldir+"runReadsMapping.pl" + " -r " + self.ref_file + " -q " + self.workdir + " -d " + self.output_dir +  " -t " + str(self.threads) + " -l " + 
+
+
     def identifyGaps(self):
         
         print " Identifying SNPs \n "
-        name = self.ref_file.split(".")[0]
-        idGaps = "perl " + self.workdir + " " + self.working_list  + " " + name + " snp " + self.project_name
-
+        name = self.ref_file_name.split(".")[0]
+        idGaps = "perl " + self.perldir+"identifyGaps.pl "   + self.output_dir + " " + self.working_list  + " " + name + " snp " + self.project_name
+    
         print idGaps + "\n"
         self.perl_calls(idGaps)
-
+        
+        #TODO not working. IN PROGRESS
     def buildSNPDB(self):
-        print "\n"
+        print "Building SNP database \n"
 
-        buildSNPDB = "perl " self.perldir+"buildSNPDB.pl -i" + self.output_dir + " -r " + self.ref_file + " l " + self.working_list + " -p " + self.project_name + " -c " + str(self.cdsSNPs) + "2>>"+self.error_file + " >> " + self.log_file
+        buildSNPDB = "perl " + self.perldir+"buildSNPDB.pl -i " + self.output_dir + " -r " + self.ref_file + " -l " + self.working_list + " -p " + self.project_name + " -c " + str(self.cdsSNPs) + " 2>>"+self.error_file + " >> " + self.log_file
         
         print buildSNPDB + "\n"
         self.perl_calls(buildSNPDB)
+
+        #TODO NOT working
+    def codingRegions(self):
         
+        print "finding coding regions \n"
+        codingRegions = "perl " + " " + self.perldir+"codingRegions.pl" + " " + self.output_dir + " "
+        self.perl_calls(codingRegions)
+    
+    def modelTest(self):
+        print "running  Jmodel test \n"
+        jmodelJar = self.workdir+"/../ext/opt/jmodeltest-2.1.10/jModelTest.jar"
+        outfile = self.output_dir+"/"+self.project_name+"/_modelTest.txt"
+        infile = self.output_dir+"/"+self.project_name+"/_all_snp_alignment.fna"
+
+        modelTest = "java -jar " + jmodelJar + " -d " + infile + " -f -i -g 4 -s 11 -AIC -a tr " + str(self.threads) + " > " + outfile
+        print modelTest
+        self.perl_calls(modelTest)
+
+    def buildFastTree(self):
+            
+        #TODO FastTreeMP is located in bin. need to provide path to bin
+
+        print "Building Fast  tree \n"
+        fastTree = "perl " +self.perldir+"buildTree.pl " +  self.perldir + " " + self.output_dir + " " + str(self.threads) + " " + str(self.tree) + " " + self.project_name+"_all" + " " + self.error_file + " " + self.log_file
+        print fastTree
+        self.perl_calls(fastTree)
+
 
     def main(self):
-        # call to runNUCmer perl script
-        #self.runNUCmer()
-        #self.runContigNUCmer()
-        #self.identifyGaps()
+        self.runNUCmer()
+        self.runContigNUCmer()
+        self.identifyGaps()
         self.buildSNPDB()
-
+        #self.modelTest()
+        self.buildFastTree()
+        
 
 RunPhame().main()
 

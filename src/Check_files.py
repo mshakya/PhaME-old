@@ -15,7 +15,6 @@ class CheckFile:
     def print_current_settings(self):
 
         print "Checking control file settings \n"
-
         if os.path.exists(self.refdir):
             print "reference directory " + self.refdir + "\n"
         else:
@@ -27,6 +26,27 @@ class CheckFile:
         else:
             sys.exit("Could not find " + self.workdir +
                      " Check Phame control file and make sure path is correct")
+
+    def clean_files(self):
+        
+        # open files in ref and trim anything after word >
+        for file in os.listdir(self.refdir): # iterate through files in ref dir
+            file_handle_original = open(os.path.join(self.refdir, file), "r") #get full file path and create fiel handle
+            output = []
+
+            for line in file_handle_original:  # iterate through the file
+                if ">" in line: # found a header line
+                    line = line.split(" ") [0] # remove things after #>NAME
+                    line += "\n"
+                    output.append(line) # store in output list
+                else:
+                    output.append(line)
+            file_handle_original.close()
+            file_handle_new = open(os.path.join(self.refdir, file), "w")  # open file for writing
+
+            for line in output:
+                file_handle_new.writelines(line) #  write output to file
+            file_handle_new.close()  # close file
 
 
 class LogFiles:

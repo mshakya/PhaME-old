@@ -47,7 +47,7 @@ class GeneCater:
             if line == "\n":
                 continue
             elif line[0] == ">":
-                line = line.rstrip('\n')
+                line = line.split(" ")[0]
                 name = line.split("|", 1)[0]
                 value = ""
             else:
