@@ -154,14 +154,24 @@ class RunPhame:
         print modelTest
         self.perl_calls(modelTest)
 
-    def buildFastTree(self):
+    def buildFastTree(self, tree):
             
         #TODO FastTreeMP is located in bin. need to provide path to bin
 
         print "Building Fast  tree \n"
-        fastTree = "perl " +self.perldir+"buildTree.pl " +  self.perldir + " " + self.output_dir + " " + str(self.threads) + " " + str(self.tree) + " " + self.project_name+"_all" + " " + self.error_file + " " + self.log_file
+        fastTree = "perl " +self.perldir+"buildTree.pl " +  self.perldir + " " + self.output_dir + " " + str(self.threads) + " " + str(tree) + " " + self.project_name+"_all" + " " + self.error_file + " " + self.log_file
         print fastTree
         self.perl_calls(fastTree)
+
+
+    def buildRaxmlTree(self, tree):
+        
+        print "Building RAxML tree \n"
+        raxmlTree = "perl " + self.perldir+"buildTree.pl " + self.perldir + " " + self.output_dir + " " +str(self.threads) + " " + str(tree) + " " + self.project_name+"_all" + " " + self.error_file + " " +self.log_file
+        self.log_file
+
+        print raxmlTree
+        self.perl_calls(raxmlTree)
 
 
     def main(self):
@@ -170,7 +180,8 @@ class RunPhame:
         self.identifyGaps()
         self.buildSNPDB()
         #self.modelTest()
-        self.buildFastTree()
+        #self.buildFastTree(self.tree)
+        self.buildRaxmlTree(2)  # hard code to use RaxML tree for testing
         
 
 RunPhame().main()
