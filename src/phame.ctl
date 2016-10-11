@@ -6,7 +6,7 @@
 
       project = snp_alignment  # project name, output files will have project name as suffix
 
-      cdsSNPS = 0  # 0:no cds SNPS; 1:cds SNPs
+      cdsSNPS = 1  # 0:no cds SNPS; 1:cds SNPs
 
     FirstTime = 1  # 1:yes; 2:update existing SNP alignment
 
@@ -15,7 +15,7 @@
                    # 6:combination F+C+R; 7:realignment  *See below
         reads = 2  # 1: single reads; 2: paired reads; 3: both types present;
 
-         tree = 2  # 0:no tree; 1:use FastTree; 2:use RAxML; 3:use both;
+         tree = 1  # 0:no tree; 1:use FastTree; 2:use RAxML; 3:use both;
     modelTest = 1  # 0:no; 1:yes;  # Only used when building a tree using RAxML
     bootstrap = 1  # 0:no; 1:yes;  # Run bootstrapping  *See below
             N = 100  # Number of bootstraps to run *See below

@@ -36,6 +36,8 @@ class RunPhame:
         self.workdir = self.control_file_obj.workdir  # create working directory var to be used later
         self.refdir = self.control_file_obj.refdir    # create reference directory var to be used later
         self.cdsSNPs = self.control_file_obj.cdsSNPS
+        self.data = self.control_file_obj.data
+
         self.tree = self.control_file_obj.tree
 	    
 	    # TODO perldir needs to not be hard codeded. Not sure how to auto grab this since is depends on install location
@@ -49,6 +51,7 @@ class RunPhame:
         self.threads = self.control_file_obj.threads  # number of threads from control file
         self.code = self.control_file_obj.code        # bacteria 0, virus 1, or Eukaryote 2
         self.project_name = self.control_file_obj.project_name
+        self.N            = self.control_file_obj.N    # number of bootstraps
 
 
         self.type_organism = ""
@@ -84,6 +87,8 @@ class RunPhame:
 
         if os.path.exists(self.workdir+"/working_list.txt"):
             self.working_list = self.workdir+"/working_list.txt"
+    
+##############################################################
 
     def prep_ref_files(self):
 
@@ -93,11 +98,14 @@ class RunPhame:
         # open pipe to perl interp
         # pass multiple command line arguments to Perl scripts using perlArgs
         #pipe = subprocess.Popen(["perl"
-        commands.getstatusoutput(perlArgs)
+       status, output = commands.getstatusoutput(perlArgs)
+
+       print str(status) + "\n"
+       print str(output) + "\n"
+########## alignment and prep functions ##################
 
     def runNUCmer(self):
-		# hard coding virius or bacteria since its a little off from original command
-        
+    
         print "Running NUCmer \n"
         nucmer = "perl /users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
                  self.fasta_filelist + " -c " + self.type_organism + "  2" + ">" + self.error_file + " > " + self.log_file
@@ -113,12 +121,23 @@ class RunPhame:
         print contigNUCmer + "\n"
         self.perl_calls(contigNUCmer)
 
-        #TODO not working
+        #TODO needs testing with reads files
+    def findFastq(self):
+        print "finding fastq files  \n "
+        findFastq = "perl " + self.perldir+"findFastq.pl" + self.workdir
+        print findFastq + "\n"
+
+        self.perl_calls(findFastq)
+        
+        #TODO needs testing with reads files
     def readMapping(self):
-        print "Mapping reads to reference  \n "
-        #readMapping = "perl " + self.perldir+"runReadsMapping.pl" + " -r " + self.ref_file + " -q " + self.workdir + " -d " + self.output_dir +  " -t " + str(self.threads) + " -l " + 
+        print " mapping reads to reference \n "
+        readMapping = "perl " + self.perldir+"readsMapping.pl " + self.workdir + " " + self.perldir + " " + self.workdir+"/reads_list.txt" + " " + str(self.threads) + " " + self.project_name + " " + self.error_file + " " + self.log_file
+        
+        print readMapping + "\n"
+        self.perl_calls(readMapping)
 
-
+        
     def identifyGaps(self):
         
         print " Identifying SNPs \n "
@@ -128,7 +147,6 @@ class RunPhame:
         print idGaps + "\n"
         self.perl_calls(idGaps)
         
-        #TODO not working. IN PROGRESS
     def buildSNPDB(self):
         print "Building SNP database \n"
 
@@ -137,12 +155,17 @@ class RunPhame:
         print buildSNPDB + "\n"
         self.perl_calls(buildSNPDB)
 
-        #TODO NOT working
+    
     def codingRegions(self):
         
         print "finding coding regions \n"
-        codingRegions = "perl " + " " + self.perldir+"codingRegions.pl" + " " + self.output_dir + " "
+        name  = self.ref_file_name.split(".")[0]
+
+        codingRegions = "perl " +  self.perldir+"codingRegions.pl" + " " + self.output_dir + " " +self.refdir+"/"+name + ".gff"+ " " + name
+        print codingRegions + "\n"
         self.perl_calls(codingRegions)
+
+########### Tree generations functions ################
     
     def modelTest(self):
         print "running  Jmodel test \n"
@@ -154,35 +177,242 @@ class RunPhame:
         print modelTest
         self.perl_calls(modelTest)
 
-    def buildFastTree(self, tree):
+    def buildTree(self, tree):
             
-        #TODO FastTreeMP is located in bin. need to provide path to bin
-
-        print "Building Fast  tree \n"
-        fastTree = "perl " +self.perldir+"buildTree.pl " +  self.perldir + " " + self.output_dir + " " + str(self.threads) + " " + str(tree) + " " + self.project_name+"_all" + " " + self.error_file + " " + self.log_file
-        print fastTree
-        self.perl_calls(fastTree)
+        print "Building tree \n"
+        Tree = "perl " +self.perldir+"buildTree.pl " +  self.perldir + " " + self.output_dir + " " + str(self.threads) + " " + str(tree) + " " + self.project_name+"_all" + " " + self.error_file + " " + self.log_file
+        print Tree
+        self.perl_calls(Tree)
 
 
-    def buildRaxmlTree(self, tree):
+    def bootstrap(self, tree):
         
-        print "Building RAxML tree \n"
-        raxmlTree = "perl " + self.perldir+"buildTree.pl " + self.perldir + " " + self.output_dir + " " +str(self.threads) + " " + str(tree) + " " + self.project_name+"_all" + " " + self.error_file + " " +self.log_file
-        self.log_file
+        print "running Bootstrap " + str(self.N) + " times \n"
+        bootstrap = "perl " +self.perldir+"bootstrap.pl " + self.perldir + " " + self.output_dir + " " + str(self.threads) + " " + str(tree) + " " + self.project_name+"_all" + " " + str(self.N) + " " + self.error_file + " " + self.log_file
+        
+        print bootstrap
+        self.perl_calls(bootstrap)
 
-        print raxmlTree
-        self.perl_calls(raxmlTree)
 
+    def treeCleanUp(self, tree):
+        
+        print " cleaning up tree files \n "
+        treeCleanUp = "perl " +self.perldir+"treeCleanUp.pl " + self.refdir + " " + str(tree) + " " + self.output_dir
+
+        print treeCleanUp
+        self.perl_calls(treeCleanUp)
+
+########### Molecular Evolution functions #############
+## TODO NEEDS TESTINGGGGGGGGGGGGGGGGGGG   ######
+        
+
+    def extractGenes(self):
+        print " extracting genes \n"
+
+        extractGenes = "perl " + self.perldir+"extractGenesOutter.pl " + self.output_dir + " " + self.output_dir+"/"+self.project_name+"_stats.txt" + " " + self.ref_file + " " + self.perldir + " " + self.working_list + " " + str(self.threads) + " " + self.output_dir+"/"+self.project_name+"_gaps.txt" + " " + self.refdir+"/"+self.ref_file_name+".gff" + " " + self.error_file + " " + self.log_file
+        
+        print extractGenes
+        self.perl_calls(extractGenes)
+
+
+    def geneAction(self, geneAction):
+
+        #function used for translation, alignment, and revTrans
+        #geneAction = translate, mafft, or pal2nal
+
+        print "translate genes \n "
+        translateGenes = "perl " + self.perldir+"parallel_run.pl -d " + self.output_dir+"/PSgenes" + " -t " + str(self.threads) + " -m " + geneAction  +  " 2>>"+self.error_file + " >> " + self.log_file
+
+        print translateGenes
+        self.perl_calls(translateGenes)
+
+    def core(self):
+
+        print "Core gene alignment \n "
+        core = "perl " + self.perldir+"faatAlign.pl " + self.output_dir+"/PSgenes" + " " + self.output_dir+"/PSgene/"+self.project_name+"_core_genome.cdn" + " 2>>"+self.error_file + " >> " + self.log_file
+
+
+    def paml(self):
+
+        ptree = ""
+
+        if self.tree == 2 or self.tree == 3:
+            ptree = self.output_dir+"/paml/RAxML_bestTree."+self.project_name+"_cds"
+        else:
+            ptree = self.output_dir+"/paml/"+self.project_name+".fasttree"
+
+
+        print " running paml \n "
+        model_0 = "perl " + self.perl_dir+"runPAML.pl -i " + " " + self.output_dir + " -t " + str(self.threads) + " -r " + ptree + " -m " + " 0 " + " -n " + " 1,2 " + " -s " +  " Sites " + " -c " + self.output+"/paml/"+self.project_name+"_core_genome.cdn" + " 2>>"+self.error_file + " >> " + self.log_file 
+
+        print model_0 + "\n"
+        self.perl_calls(model_0)
+
+        parseSite = "perl " + self.perl_dir+"parseSitePAML.pl " + self.output_dir+"/paml" + " " + " 1,2 " + "2>>"+self.error_file + " >> " + self.log_file
+        print praseSite + "\n"
+        self.perl_calls(parseSite)
+
+        parseTree = "perl " + self.perl_dir+"ParseTree.pl " + str(self.tree) + " 2>>"+self.error_file + " >> " + self.log_file
+        print parseTree + "\n"
+        self.perl_calls(parseTree)
+
+    
+        ps = "perl " + self.perl_dir+"runPAML.pl " + " -i "+ self.output_dir + " -t " + str(self.threads) + " -r " + ptree + " -m " + " 2 " + " -n " +  " 2 " + " -s " + "BrSites" + " -c " + self.output+"/paml/"+self.project_name+"_core_genome.cdn" + " 2>>"+ self.error_file + " >> " + self.log_file
+        print ps + "\n"
+        self.perl_calls(ps)
+
+        move = self.output_dir+"/paml/*/*BrSites" + self.output_dir+"/paml"
+        self.perl_calls(move)
+    
+        parse = "perl " + self.perl_dir+"parseSitePAML.pl" + " " + self.output_dir+"/paml" + " 0,1,2,7,8," + "2" + " 2>>" + self.error_file + " >> " + self.log_file
+        print parse + "\n"
+        self.perl_calls(parse)
+
+
+
+    def hyphy(self):
+        
+        rootedtree = ""
+        if self.tree == 2 or self.tree == 3:
+            rootedtree = self.output_dir+"/RAxML_rootedTree."+self.project_name+"_cds_r"
+        else:
+            rootedtree = self.output_dir+"/"+self.project_name+"_cds_rooted.fasttree"
+
+        if self.tree == 2 or self.tree == 3:
+            ptree = self.output_dir+"/paml/RAxML_bestTree."+self.project_name+"_cds"
+        else:
+            ptree = self.output_dir+"/paml/"+self.project_name+".fasttree"
+        
+        hyphy = "perl " + self.perl_dir+"runHyPhy.pl " + " -i " + self.output_dir + " -t " + str(int(self.threads/2)) + " -r " + ptree + " o " + rootedtree + " -c " + self.output + "/paml/"+self.project_name + "_core_genome.cdn" + " 2>>" + self.error_file + " >> " + self.log_file
+    
+
+################ Main call #######################
+###  call above funcitons.  ###
+###  TODO create system to auto call functions in correct order ###
+##################################################
+
+    def run_parameters(self):
+        # set up PhaME pipeline calls for SNP extraction and alignment
+
+        if self.data is 0:
+            self.runNUCmer()
+                    
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+        elif self.data is 1:
+            self.runContigNUCmer()
+            
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+        elif self.data is 2:
+            
+            self.findFastq()
+            self.identifyGaps()
+            self.readMapping()
+
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+        elif self.data is 3:
+            self.runNUCmer()
+            self.runContigNUCmer()
+
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+        elif self.data is 4:
+
+            self.findFastq()
+            self.runNUCmer()
+            self.identifyGaps()
+            self.readMapping()
+
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+        elif self.data is 5:
+
+            self.findFastq()
+            self.runContigNUCmer()
+            self.identifyGaps()
+            self.readMapping()
+
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+        elif self.data is 6:
+
+            self.findFastq()
+            self.runNUCmer()
+            self.runContigNUCmer()
+            self.identifyGaps()
+            self.readMapping()
+
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+        elif self.data is 7:
+            
+            self.findFastq()
+
+            if self.cdsSNPs is 1:
+                self.codingRegions()
+
+            self.identifyGaps()
+            self.buildSNPDB()
+
+    # calls to build trees
+
+        if self.tree  > 0:
+
+            if self.tree is 2 or self.tree is 3:
+                self.buildTree(self.tree)
+                self.bootstrap(2)
+                self.treeCleanUp(self.tree)
+            else:
+                self.buildTree(self.tree)
+                self.treeCleanUp(self.tree)
+        
+        print " \n PhaME run complete. Check the results folder \n "
+        print " please view the Error.txt file in the results folder to see if any issues were encountered during the run \n"
+        print " The logFile.txt file in the results folder contains information about the run \n"
 
     def main(self):
-        self.runNUCmer()
-        self.runContigNUCmer()
-        self.identifyGaps()
-        self.buildSNPDB()
-        #self.modelTest()
-        #self.buildFastTree(self.tree)
-        self.buildRaxmlTree(2)  # hard code to use RaxML tree for testing
         
+        self.run_parameters()
+
+       # TODO impliment 
+       #self.modelTest()   # not yet implimented
+
+       # TODO test below
+       ###################
+        #self.findFastq()   
+        #self.readMapping()
+        
+
 
 RunPhame().main()
 
