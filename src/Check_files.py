@@ -90,9 +90,9 @@ class GetInputFiles:
                 
                 if "." in file:
 
-                    if file.split(".")[1] == "contig" or file.split(".")[1] == "ctg" or file.split(".")[1] == "contigs":
-                      
-			file_list.append(os.path.join(directory, file))
+                    if file.split(".")[1] == "contig" or file.split(".")[1] == "ctg" or file.split(".")[1] == "contigs" or "contig" in file or  "ctg" in file or  "contigs" in file:
+                        
+                        file_list.append(os.path.join(directory, file))
                         contig_file = os.path.join(directory,file)
 
                         #create list of contig files for perl scripts to use
@@ -101,21 +101,27 @@ class GetInputFiles:
                         filename += "_contig"
                         contig_list.writelines(filename + "\n")
 
+
+                        catAlign.GeneCater().get_files(file, directory)
+
+                    ###############################################################
+                        # below is now done in catAlign file in write_to_file_contigs function
+                    ###############################################################
                         # need to move contig files from workdir to workdir/files.
                         # open a file handle on current contig file.
                         # create a file with the same file name in /files
                         # as you read from original file. write to new file in /files
 
-                        file = file.split(".")[0]
-                        file += "_contig.fna"
-                        output_contig_file_handle = open(self.workdir+"/files/"+file, "w")
-                        contig_file_handle = open(contig_file, "r")
-                        for line in contig_file_handle:
-                            output_contig_file_handle.writelines(line)
-
-
-                    elif file.split(".")[1] == "fastq" or file.split(".")[1] == "fa" \
-                            or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
+                        #file = file.split(".")[0]
+                        #file += "_contig.fna"
+                        #output_contig_file_handle = open(self.workdir+"/files/"+file, "w")
+                        #contig_file_handle = open(contig_file, "r")
+                        #for line in contig_file_handle:
+                           # output_contig_file_handle.writelines(line)
+                            
+                    
+                    elif file.split(".")[1] == "fastq" or file.split(".")[1] == "fa" or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
+                    #elif "fastq" in file or "fa" in file or "fna" in file or "fasta" in file:
 
                         catAlign.GeneCater().get_files(file, directory)  # send file to get cated
 
@@ -125,6 +131,8 @@ class GetInputFiles:
                         fasta_list.writelines(filename + "\n")
 
                         # add full filepath to a list. use that list to access files when needed
+                    else:
+                        pass
         else:
             sys.exit("could not access " + directory)
 

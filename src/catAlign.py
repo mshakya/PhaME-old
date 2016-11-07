@@ -27,7 +27,7 @@ class GeneCater:
         self.gene_map = {}
         control_obj = read_control.ParseFile()
         self.workdir = control_obj.workdir
-
+        self.refdir = control_obj.refdir
 
     def get_files(self, filename, directory):
 
@@ -55,7 +55,10 @@ class GeneCater:
                 value = line
             self.add_to_gene_map(name, value)
 
-        self.write_to_file(self.workdir+"/files/", filename)
+        if directory == self.refdir:
+            self.write_to_file(self.workdir+"/files/", filename)
+        elif directory == self.workdir:
+            self.write_to_file(self.workdir+"/files/", filename)   
 
     def add_to_gene_map(self, name, value):
 
@@ -71,12 +74,31 @@ class GeneCater:
         filename += ".fna"
         new_file = open(output_dir+filename, "w+")
 
-        new_file.writelines(self.gene_map.keys()[0].split()[0] + "\n")
+        if not self.gene_map:
+            pass
+        else:
+            new_file.writelines(self.gene_map.keys()[0].split()[0] + "\n")
+            for item in self.gene_map:
+                #new_file.writelines(item + "\n")
+                #new_file.writelines(item.split()[0] + "\n")
+                new_file.writelines(self.gene_map[item] + "\n")
 
-        for item in self.gene_map:
-            #new_file.writelines(item + "\n")
-            #new_file.writelines(item.split()[0] + "\n")
-            new_file.writelines(self.gene_map[item] + "\n")
+    def write_to_file_contigs(self, output_dir, filename):
+
+        filename = filename.split(".")[0]
+        filename += "_contig.fna"
+        new_file = open(output_dir+filename, "w+")
+
+        if not self.gene_map:
+            pass
+        else:
+            new_file.writelines(self.gene_map.keys()[0].splie()[0] + "\n") #writes the header
+
+            for item in self.gene_map:
+                new_file.writelines(self.gene_map[item] + "\n")
+        
+
+       
 
 # testing purposes
 # def main():

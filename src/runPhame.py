@@ -124,7 +124,7 @@ class RunPhame:
         #TODO needs testing with reads files
     def findFastq(self):
         print "finding fastq files  \n "
-        findFastq = "perl " + self.perldir+"findFastq.pl" + self.workdir
+        findFastq = "perl " + self.perldir+"findFastq.pl " + self.workdir
         print findFastq + "\n"
 
         self.perl_calls(findFastq)

@@ -1,4 +1,4 @@
-ft;
+my $dir=shift;
 my $annotation=shift;
 my $name=shift;
 my $start;
@@ -73,7 +73,7 @@ if ($first){
     $gap_start = $last+1;
     print OUT "$name\t$gap_start\t$source_end\tnoncoding\n";
     }
-}
+
 
 
 
