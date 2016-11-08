@@ -34,11 +34,12 @@ class GeneCater:
         gene_file = ""
         name = ""
 
-        #for single_file in files_list:
-        #filename = single_file
+        # for single_file in files_list:
+        # filename = single_file
 
         try:
-            gene_file = open(directory+"/"+filename, "r")
+            # gene_file = open(directory+"/"+filename, "r")
+            gene_file = open(filename, "r")
         except IOError:
             print "Could not open \n" + str(filename)
             sys.exit("ERROR could not open " + str(filename))
@@ -72,7 +73,7 @@ class GeneCater:
         
         filename = filename.split(".")[0]
         filename += ".fna"
-        new_file = open(output_dir+filename, "w+")
+        new_file = open(filename, "w+")
 
         if not self.gene_map:
             pass
@@ -87,7 +88,7 @@ class GeneCater:
 
         filename = filename.split(".")[0]
         filename += "_contig.fna"
-        new_file = open(output_dir+filename, "w+")
+        new_file = open(filename, "w+")
 
         if not self.gene_map:
             pass

@@ -1,5 +1,7 @@
-      refdir = /users/312793/scratch/PhaME/git_phame/phame/ecoli/ref  # directory where reference files are located
-      workdir = /users/312793/scratch/PhaME/git_phame/phame/ecoli  # directory where contigs/reads files are located and output is stored
+      refdir =/Users/nick/PycharmProjects/Phame/phame/test/ref  # directory where reference files are located
+      workdir =/Users/nick/PycharmProjects/Phame/phame/test  # directory where contigs/reads files are located and output is stored
+      perldir =/Users/nick/PycharmProjects/Phame/phame/perl_scripts  # directory where perl scripts are located
+
 
     reference = 1  # 0:pick a random reference; 1:use given reference
       reffile = Ecoli_11368.fna  # reference filename
@@ -26,7 +28,7 @@
 
         clean = 0  # 0:no clean; 1:clean
 
-      threads = 4  # Number of threads to use
+      threads = 1  # Number of threads to use
 
        cutoff = 0  # Mismatch cutoff - ignore SNPs within cutoff length of each other.
 

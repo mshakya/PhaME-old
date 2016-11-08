@@ -31,39 +31,37 @@ class RunPhame:
         #validate the paths in the control file
         #create error and log files"""
 
-        self.control_file_obj = read_control.ParseFile()
-        self.control_file_obj.read_file()
+        self.control_file_obj = read_control.ParseFile() # create read_control obj
+        self.control_file_obj.read_file()               # call to readin and parse the control file
         self.workdir = self.control_file_obj.workdir  # create working directory var to be used later
         self.refdir = self.control_file_obj.refdir    # create reference directory var to be used later
         self.cdsSNPs = self.control_file_obj.cdsSNPS
         self.data = self.control_file_obj.data
 
         self.tree = self.control_file_obj.tree
-	    
-	    # TODO perldir needs to not be hard codeded. Not sure how to auto grab this since is depends on install location
-        self.perldir = "/users/312793/PhaME/git_phame/phame/perl_scripts/"  # dir to perl scripts
+
+        # TODO perldir needs to not be hard codeded. Not sure how to auto grab this since is depends on install location
+        self.perldir = self.control_file_obj.perldir+"/"   # "/users/312793/PhaME/git_phame/phame/perl_scripts/"  # dir to perl scripts
 
         self.output_dir = self.workdir+"/results"       # create output directory var to be used later
         
-        self.ref_file = self.refdir+"/"+ self.control_file_obj.reffile
-        self.ref_file_name = self.control_file_obj.reffile
+        self.ref_file = self.refdir+"/"+ self.control_file_obj.reffile  # reference file path
+        self.ref_file_name = self.control_file_obj.reffile              #ref file name only
 
         self.threads = self.control_file_obj.threads  # number of threads from control file
         self.code = self.control_file_obj.code        # bacteria 0, virus 1, or Eukaryote 2
         self.project_name = self.control_file_obj.project_name
-        self.N            = self.control_file_obj.N    # number of bootstraps
-
+        self.N = self.control_file_obj.N    # number of bootstraps
 
         self.type_organism = ""
         self.project_name = self.control_file_obj.project_name
         
         if self.code == 0:
-		    self.type_organism = "bacteria"
+            self.type_organism = "bacteria"
         elif self.code == 1:
-		    self.type_organism = "virus"
+            self.type_organism = "virus"
         elif self.code == 2:
-		    self.type_organism = "eukaryote"
-	
+            self.type_organism = "eukaryote"
 
         Check_files.CheckFile().print_current_settings()
         Check_files.CheckFile().clean_files()
@@ -73,8 +71,9 @@ class RunPhame:
 
         get_input_obj = Check_files.GetInputFiles()  # class instance obj
 
-        self.refdir_file_list = get_input_obj.get_input_files(self.refdir)   # list of files in reference directory
-        self.workdir_file_list = get_input_obj.get_input_files(self.workdir)  # list of files in working directory
+        # need to paralellize this
+        get_input_obj.parrallelized_file_processing(self.refdir)   # list of files in reference directory
+        get_input_obj.parrallelized_file_processing(self.workdir)  # list of files in working directory
         get_input_obj.create_working_list()
 
         if os.path.exists(str(self.workdir)+"/fasta_filelist.txt"):
@@ -90,9 +89,9 @@ class RunPhame:
     
 ##############################################################
 
-    def prep_ref_files(self):
+    # def prep_ref_files(self):
 
-        catAlign.GeneCater().get_files(self.refdir_file_list, self.output_dir)
+    # catAlign.GeneCater().get_files(self.refdir_file_list, self.output_dir)
 
     def perl_calls(self, perlArgs):
         # open pipe to perl interp
@@ -414,6 +413,6 @@ class RunPhame:
         
 
 
-RunPhame().main()
+RunPhame()#.main()
 
 

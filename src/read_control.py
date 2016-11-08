@@ -11,6 +11,7 @@ class ParseFile:
 
     refdir = ""
     workdir = ""
+    perldir = ""
     reference = ""
     reffile = ""
     project_name = ""
@@ -49,6 +50,9 @@ class ParseFile:
             elif words[0] == "workdir":
                 workdir = line.split("=")[1].partition("#")[0].strip()
                 ParseFile.workdir = workdir
+            elif words[0] == "perldir":
+                perldir = line.split("=")[1].partition("#")[0].strip()
+                ParseFile.perldir = perldir
             elif words[0] == "reference":
                 reference = line.split("=")[1].partition("#")[0].strip()
                 ParseFile.reference = int(reference)
