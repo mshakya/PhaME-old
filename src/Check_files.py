@@ -70,7 +70,7 @@ class LogFiles:
 
 class GetInputFiles:
 
-    #TODO first send file to catAlign. then have file added to the filelist. BOTH file and filelist should go to output/files
+    # first send file to catAlign. then have file added to the filelist. BOTH file and filelist should go to output/files
     
     def __init__(self):
         control_obj = read_control.ParseFile()
@@ -86,8 +86,6 @@ class GetInputFiles:
             os.makedirs(self.workdir + "/files")
 
         file_list = []
-        procs = []
-        q = Queue()
 
         if os.path.exists(directory):
 
@@ -99,37 +97,9 @@ class GetInputFiles:
             sub_list = [file_list[j] for j in range(0, len(file_list)) if j % self.threads == i]
 
             if len(sub_list) > 0:
-                p = Process(target=self.get_input_files, args=([sub_list, directory]))
+                p = Process(target=self.get_input_files, args=([sub_list, directory]))  # process not actually doing anything
                 p.start()
-                procs.append(p)
-
-        #collect the results
-        all_results = []
-        for i in range(0, len(procs)):
-            all_results.append(q.get())
-
-        for file in all_results:
-
-            if "." in file:
-
-                if file.split(".")[1] == "contig" or file.split(".")[1] == "ctg" or file.split(".")[1] == "contigs" or "contig" in file or "ctg" in file or "contigs" in file:
-
-                    contig_list = open(self.workdir + "/contig_filelist.txt", "a")
-                    filename = file.split(".")[0]
-                    filename += "_contig"
-                    contig_list.writelines(filename + "\n")
-
-                elif file.split(".")[1] == "fastq" or file.split(".")[1] == "fa" or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
-
-                    fasta_list = open(self.workdir + "/fasta_filelist.txt", "a")
-                    filename = file.split(".")[0]
-                    fasta_list.writelines(filename + "\n")
-                else:
-                    pass
-
-        print "\n found the following files in " + directory + " directory \n"
-        for item in all_results:
-            print item + "\n"
+                p.join()
 
     # TODO need to make sure there are no race conditions. Use Thread locking for safe writing to fast/contig file lists
 
@@ -143,18 +113,19 @@ class GetInputFiles:
                 
                 if "." in file:
 
-                    if file.split(".")[1] == "contig" or file.split(".")[1] == "ctg" or file.split(".")[1] == "contigs" or "contig" in file or  "ctg" in file or  "contigs" in file:
+                    if file.split(".")[1] == "contig" or file.split(".")[1] == "ctg" or file.split(".")[1] == "contigs" \
+                            or "contig" in file or "ctg" in file or "contigs" in file:
 
                         catAlign.GeneCater().get_files(file, directory)
                         file_list.append(os.path.join(directory, file))
 
-                        '''
-                        #create list of contig files for perl scripts to use
+                        # create list of contig files for perl scripts to use
                         contig_list = open(self.workdir+"/contig_filelist.txt", "a")
-                        filename = file.split(".")[0]
+                        base_file_name = os.path.split(file)[1]
+                        filename = base_file_name.split(".")[0]
                         filename += "_contig"
                         contig_list.writelines(filename + "\n")
-                        '''
+
                     ###############################################################
                         # below is now done in catAlign file in write_to_file_contigs function
                     ###############################################################
@@ -163,39 +134,25 @@ class GetInputFiles:
                         # create a file with the same file name in /files
                         # as you read from original file. write to new file in /files
 
-                        #file = file.split(".")[0]
-                        #file += "_contig.fna"
-                        #output_contig_file_handle = open(self.workdir+"/files/"+file, "w")
-                        #contig_file_handle = open(contig_file, "r")
-                        #for line in contig_file_handle:
-                           # output_contig_file_handle.writelines(line)
-
                     elif file.split(".")[1] == "fastq" or file.split(".")[1] == "fa" or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
                         # elif "fastq" in file or "fa" in file or "fna" in file or "fasta" in file:
 
                         catAlign.GeneCater().get_files(file, directory)  # send file to get cated
 
-                        file_list.append(os.path.join(self.workdir+"/files/", file))
+                        file_list.append(file)
 
-                        '''
                         fasta_list = open(self.workdir+"/fasta_filelist.txt", "a")
-                        filename = file.split(".")[0]
+                        base_file_name = os.path.split(file)[1]
+                        filename = base_file_name.split(".")[0]
                         fasta_list.writelines(filename + "\n")
-                        '''
-
-                        # add full filepath to a list. use that list to access files when needed
                     else:
                         pass
         else:
             sys.exit("could not access " + directory)
 
-        '''
         print "\n found the following files in " + directory + " directory \n"
         for item in file_list:
             print item + "\n"
-        '''
-
-        return file_list
 
     def create_working_list(self):
 

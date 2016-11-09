@@ -28,7 +28,7 @@
 
         clean = 0  # 0:no clean; 1:clean
 
-      threads = 1  # Number of threads to use
+      threads = 2  # Number of threads to use
 
        cutoff = 0  # Mismatch cutoff - ignore SNPs within cutoff length of each other.
 

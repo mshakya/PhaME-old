@@ -248,7 +248,7 @@ class RunPhame:
         self.perl_calls(model_0)
 
         parseSite = "perl " + self.perl_dir+"parseSitePAML.pl " + self.output_dir+"/paml" + " " + " 1,2 " + "2>>"+self.error_file + " >> " + self.log_file
-        print praseSite + "\n"
+        print parseSite + "\n"
         self.perl_calls(parseSite)
 
         parseTree = "perl " + self.perl_dir+"ParseTree.pl " + str(self.tree) + " 2>>"+self.error_file + " >> " + self.log_file

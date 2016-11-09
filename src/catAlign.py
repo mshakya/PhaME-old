@@ -19,6 +19,8 @@ ex:
 """
 import sys
 import read_control
+import os
+
 
 class GeneCater:
 
@@ -33,9 +35,6 @@ class GeneCater:
 
         gene_file = ""
         name = ""
-
-        # for single_file in files_list:
-        # filename = single_file
 
         try:
             # gene_file = open(directory+"/"+filename, "r")
@@ -70,19 +69,22 @@ class GeneCater:
             self.gene_map[name] = curr_val + value
 
     def write_to_file(self, output_dir, filename):
-        
-        filename = filename.split(".")[0]
+
+        base_file_name = os.path.split(filename)[1]
+        filename = base_file_name.split(".")[0]
         filename += ".fna"
-        new_file = open(filename, "w+")
+        new_file = open(self.workdir+"/files/"+filename, "w+")
 
         if not self.gene_map:
             pass
         else:
             new_file.writelines(self.gene_map.keys()[0].split()[0] + "\n")
             for item in self.gene_map:
-                #new_file.writelines(item + "\n")
-                #new_file.writelines(item.split()[0] + "\n")
+
                 new_file.writelines(self.gene_map[item] + "\n")
+
+    """
+    Obselete method
 
     def write_to_file_contigs(self, output_dir, filename):
 
@@ -97,16 +99,4 @@ class GeneCater:
 
             for item in self.gene_map:
                 new_file.writelines(self.gene_map[item] + "\n")
-        
-
-       
-
-# testing purposes
-# def main():
-#
-#     filename = "KJ660347.fasta"
-#     directory = "/Users/nick/PycharmProjects/PhaME/test/ref/"
-#
-#     GeneCater().get_files(directory+filename, "/Users/nick/PycharmProjects/PhaME/src")
-#
-# main()
+        """
