@@ -31,8 +31,10 @@ class RunPhame:
         #validate the paths in the control file
         #create error and log files"""
 
+        controle_file_path = read_control.get_control_file_path.controle_file_path
+
         self.control_file_obj = read_control.ParseFile() # create read_control obj
-        self.control_file_obj.read_file()               # call to readin and parse the control file
+        self.control_file_obj.read_file(controle_file_path)               # call to readin and parse the control file
         self.workdir = self.control_file_obj.workdir  # create working directory var to be used later
         self.refdir = self.control_file_obj.refdir    # create reference directory var to be used later
         self.cdsSNPs = self.control_file_obj.cdsSNPS
@@ -74,6 +76,7 @@ class RunPhame:
         # need to paralellize this
         get_input_obj.parrallelized_file_processing(self.refdir)   # list of files in reference directory
         get_input_obj.parrallelized_file_processing(self.workdir)  # list of files in working directory
+        #get_input_obj.get_input_files(self.workdir)
         get_input_obj.create_working_list()
 
         if os.path.exists(str(self.workdir)+"/fasta_filelist.txt"):
@@ -104,7 +107,8 @@ class RunPhame:
 ########## alignment and prep functions ##################
 
     def runNUCmer(self):
-    
+
+    #TODO dont hardcode perl path
         print "Running NUCmer \n"
         nucmer = "perl /users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
                  self.fasta_filelist + " -c " + self.type_organism + "  2" + ">" + self.error_file + " > " + self.log_file

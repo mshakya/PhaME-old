@@ -6,11 +6,15 @@ import sys
 
 from multiprocessing import Pool, Process, Queue, cpu_count
 
+control_file_path = read_control.get_control_file_path.controle_file_path
+
 
 class CheckFile:
 
+    #controle_file_path = "/Users/nick/PycharmProjects/Phame/phame/src/phame.ctl" #input("Please input path to control file \n")
+
     control_obj = read_control.ParseFile()
-    control_obj.read_file()
+    control_obj.read_file(control_file_path)
     refdir = control_obj.refdir
     workdir = control_obj.workdir
 
@@ -54,7 +58,7 @@ class CheckFile:
 class LogFiles:
 
             control_obj = read_control.ParseFile()
-            control_obj.read_file()
+            control_obj.read_file(control_file_path)
             workdir = control_obj.workdir
             resultsdir = workdir+"/results/"
 
@@ -74,7 +78,7 @@ class GetInputFiles:
     
     def __init__(self):
         control_obj = read_control.ParseFile()
-        control_obj.read_file()
+        control_obj.read_file(control_file_path)
         self.workdir = control_obj.workdir
         self.threads = control_obj.threads
 
@@ -97,7 +101,7 @@ class GetInputFiles:
             sub_list = [file_list[j] for j in range(0, len(file_list)) if j % self.threads == i]
 
             if len(sub_list) > 0:
-                p = Process(target=self.get_input_files, args=([sub_list, directory]))  # process not actually doing anything
+                p = Process(target=self.get_input_files, args=([sub_list, directory]))  # failing here when only reads in workdir
                 p.start()
                 p.join()
 
@@ -134,7 +138,7 @@ class GetInputFiles:
                         # create a file with the same file name in /files
                         # as you read from original file. write to new file in /files
 
-                    elif file.split(".")[1] == "fastq" or file.split(".")[1] == "fa" or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
+                    elif file.split(".")[1] == "fa" or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
                         # elif "fastq" in file or "fa" in file or "fna" in file or "fasta" in file:
 
                         catAlign.GeneCater().get_files(file, directory)  # send file to get cated
@@ -145,6 +149,21 @@ class GetInputFiles:
                         base_file_name = os.path.split(file)[1]
                         filename = base_file_name.split(".")[0]
                         fasta_list.writelines(filename + "\n")
+
+                                    # file ==   test_reads.1.fastq
+                                    # count number of . in string. if > than 1 go into statment
+                    elif file.count(".") > 1:    # this is not catching reads files
+
+                        file_list.append(file)
+                        reads_list = open(self.workdir + "/reads_list.txt", "a")
+
+                        if file.split(".")[1] == "1":
+
+                            base_file_name = os.path.split(file)[1]
+                            filename = base_file_name.split(".")[0]
+                            filename += "_pread"
+
+                            reads_list.writelines(filename + "\n")
                     else:
                         pass
         else:
@@ -157,12 +176,14 @@ class GetInputFiles:
     def create_working_list(self):
 
         fasta_list = open(self.workdir+"/fasta_filelist.txt", "r")
-        contig_list = open(self.workdir+"/contig_filelist.txt", "r")
+        working_list = open(self.workdir + "/working_list.txt", "a")
 
-        working_list = open(self.workdir+"/working_list.txt", "a")
+        if os.path.exists(self.workdir + "/contig_filelist.txt"):
+            contig_list = open(self.workdir+"/contig_filelist.txt", "r")
+            for line in contig_list:
+                working_list.writelines(line)
 
         for line in fasta_list:
             working_list.writelines(line)
-        for line in contig_list:
-            working_list.writelines(line)
+
 
