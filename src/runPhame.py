@@ -42,7 +42,6 @@ class RunPhame:
 
         self.tree = self.control_file_obj.tree
 
-        # TODO perldir needs to not be hard codeded. Not sure how to auto grab this since is depends on install location
         self.perldir = self.control_file_obj.perldir+"/"   # "/users/312793/PhaME/git_phame/phame/perl_scripts/"  # dir to perl scripts
 
         self.output_dir = self.workdir+"/results"       # create output directory var to be used later
@@ -73,9 +72,10 @@ class RunPhame:
 
         get_input_obj = Check_files.GetInputFiles()  # class instance obj
 
-        # need to paralellize this
+        # parralleized file processing
         get_input_obj.parrallelized_file_processing(self.refdir)   # list of files in reference directory
-        get_input_obj.parrallelized_file_processing(self.workdir)  # list of files in working directory
+        get_input_obj.parrallelized_file_processing(self.workdir) # list of files in working directory
+
         #get_input_obj.get_input_files(self.workdir)
         get_input_obj.create_working_list()
 
@@ -108,9 +108,9 @@ class RunPhame:
 
     def runNUCmer(self):
 
-    #TODO dont hardcode perl path
+
         print "Running NUCmer \n"
-        nucmer = "perl /users/312793/PhaME/git_phame/phame/perl_scripts/runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
+        nucmer = "perl " + self.perldir + "runNUCmer.pl -q " + self.workdir + " -d " + self.output_dir + " -t " + str(self.threads) + " -l " + \
                  self.fasta_filelist + " -c " + self.type_organism + "  2" + ">" + self.error_file + " > " + self.log_file
         print nucmer
         self.perl_calls(nucmer)
@@ -124,7 +124,7 @@ class RunPhame:
         print contigNUCmer + "\n"
         self.perl_calls(contigNUCmer)
 
-        #TODO needs testing with reads files
+
     def findFastq(self):
         print "finding fastq files  \n "
         findFastq = "perl " + self.perldir+"findFastq.pl " + self.workdir
@@ -132,7 +132,7 @@ class RunPhame:
 
         self.perl_calls(findFastq)
         
-        #TODO needs testing with reads files
+
     def readMapping(self):
         print " mapping reads to reference \n "
         readMapping = "perl " + self.perldir+"readsMapping.pl " + self.workdir + " " + self.perldir + " " + self.workdir+"/reads_list.txt" + " " + str(self.threads) + " " + self.project_name + " " + self.error_file + " " + self.log_file
@@ -291,7 +291,6 @@ class RunPhame:
 
 ################ Main call #######################
 ###  call above funcitons.  ###
-###  TODO create system to auto call functions in correct order ###
 ##################################################
 
     def run_parameters(self):
@@ -410,13 +409,7 @@ class RunPhame:
        # TODO impliment 
        #self.modelTest()   # not yet implimented
 
-       # TODO test below
-       ###################
-        #self.findFastq()   
-        #self.readMapping()
-        
 
-
-RunPhame()#.main()
+RunPhame().main()
 
 

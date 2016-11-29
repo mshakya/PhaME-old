@@ -43,7 +43,6 @@ class ParseFile:
     cutoff = ""
 
     def read_file(self, controle_file_path):
-        ####TODO add path to open phame.ctl
 
         if os.path.exists(controle_file_path):
 

@@ -11,8 +11,6 @@ control_file_path = read_control.get_control_file_path.controle_file_path
 
 class CheckFile:
 
-    #controle_file_path = "/Users/nick/PycharmProjects/Phame/phame/src/phame.ctl" #input("Please input path to control file \n")
-
     control_obj = read_control.ParseFile()
     control_obj.read_file(control_file_path)
     refdir = control_obj.refdir
@@ -105,7 +103,8 @@ class GetInputFiles:
                 p.start()
                 p.join()
 
-    # TODO need to make sure there are no race conditions. Use Thread locking for safe writing to fast/contig file lists
+  #TODO fix hanging when reading files in working dir (seems to be only for .fastq files)
+    # possibly fixed. needs testing
 
     def get_input_files(self, sub_file_list, directory):
 

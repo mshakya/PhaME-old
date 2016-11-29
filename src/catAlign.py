@@ -83,20 +83,3 @@ class GeneCater:
 
                 new_file.writelines(self.gene_map[item] + "\n")
 
-    """
-    Obselete method
-
-    def write_to_file_contigs(self, output_dir, filename):
-
-        filename = filename.split(".")[0]
-        filename += "_contig.fna"
-        new_file = open(filename, "w+")
-
-        if not self.gene_map:
-            pass
-        else:
-            new_file.writelines(self.gene_map.keys()[0].splie()[0] + "\n") #writes the header
-
-            for item in self.gene_map:
-                new_file.writelines(self.gene_map[item] + "\n")
-        """
