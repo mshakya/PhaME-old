@@ -4,7 +4,7 @@ import catAlign
 import os.path
 import sys
 
-from multiprocessing import Pool, Process, Queue, cpu_count
+from multiprocessing import Process
 
 control_file_path = read_control.get_control_file_path.controle_file_path
 
@@ -119,7 +119,8 @@ class GetInputFiles:
                     if file.split(".")[1] == "contig" or file.split(".")[1] == "ctg" or file.split(".")[1] == "contigs" \
                             or "contig" in file or "ctg" in file or "contigs" in file:
 
-                        catAlign.GeneCater().get_files(file, directory)
+                        #catAlign.GeneCater().get_files(file, directory)
+                        catAlign.prepContigs().change_name(file, directory)
                         file_list.append(os.path.join(directory, file))
 
                         # create list of contig files for perl scripts to use
@@ -129,16 +130,7 @@ class GetInputFiles:
                         filename += "_contig"
                         contig_list.writelines(filename + "\n")
 
-                    ###############################################################
-                        # below is now done in catAlign file in write_to_file_contigs function
-                    ###############################################################
-                        # need to move contig files from workdir to workdir/files.
-                        # open a file handle on current contig file.
-                        # create a file with the same file name in /files
-                        # as you read from original file. write to new file in /files
-
                     elif file.split(".")[1] == "fa" or file.split(".")[1] == "fna" or file.split(".")[1] == "fasta":
-                        # elif "fastq" in file or "fa" in file or "fna" in file or "fasta" in file:
 
                         catAlign.GeneCater().get_files(file, directory)  # send file to get cated
 
@@ -151,7 +143,7 @@ class GetInputFiles:
 
                                     # file ==   test_reads.1.fastq
                                     # count number of . in string. if > than 1 go into statment
-                    elif file.count(".") > 1:    # this is not catching reads files
+                    elif file.count(".") > 1:
 
                         file_list.append(file)
                         reads_list = open(self.workdir + "/reads_list.txt", "a")

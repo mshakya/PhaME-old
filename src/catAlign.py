@@ -1,7 +1,7 @@
 """
 author: nick miller
 
-This script takes in a fasta files with multiple genes and combines them into 1 sequence.
+class GeneCater takes in a fasta files with multiple genes and combines them into 1 sequence.
 Genes within the fasta files are cated together
 
 ex:
@@ -16,6 +16,11 @@ ex:
     output file
     >genes:
     ACTGTATTA
+
+Class prepContigs:
+    changes contigs names and
+    saves them into /files dir under the working dir
+
 """
 import sys
 import read_control
@@ -33,11 +38,9 @@ class GeneCater:
 
     def get_files(self, filename, directory):
 
-        gene_file = ""
         name = ""
 
         try:
-            # gene_file = open(directory+"/"+filename, "r")
             gene_file = open(filename, "r")
         except IOError:
             print "Could not open \n" + str(filename)
@@ -82,4 +85,29 @@ class GeneCater:
             for item in self.gene_map:
 
                 new_file.writelines(self.gene_map[item] + "\n")
+
+
+class prepContigs:
+
+        def change_name(self, filename, directory):
+            #save file extension as filename_contig.fna in files dir
+
+            #contig renamed to name1, name2 cut after space
+
+            file_handle_original = open(filename, "r")  # open file handle on original file
+            base_file_name = os.path.split(filename)[1]  # split full path to just grab the file name
+            base_file_name = base_file_name.split(".")[0] # remove file extension
+            file_handle_new = open(directory + "/files/"+base_file_name+"_contig.fna", "w") # create new file in /files to write to
+            count = 1 # counter for contig number
+
+            for line in file_handle_original:
+                if line.startswith(">"):
+                    line = ">"+base_file_name+str(count)
+                    file_handle_new.writelines(line + "\n")
+                    count += 1
+                else:
+                    file_handle_new.writelines(line)
+
+            file_handle_original.close()
+            file_handle_new.close()
 

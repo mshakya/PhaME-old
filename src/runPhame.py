@@ -410,6 +410,6 @@ class RunPhame:
        #self.modelTest()   # not yet implimented
 
 
-RunPhame().main()
+RunPhame()#.main()
 
 
