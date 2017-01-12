@@ -20,7 +20,7 @@ Provides evolutionary analyses (genes under positive selection) using CDS SNPs.
 
 * SAMtools version 0.1.19 and vcftools - Convert BAM files created by Bowtie
 
-* FastTree version >=2.1.8- Contruction of phylogenetic tree
+* FastTree version >=2.1.8- Construction of phylogenetic tree
 
 * RAxML version >=8.0.26 - Maximum likelihood construction of phylogenetic tree
 
