@@ -35,3 +35,4 @@ local.properties
 
 # Mac files
 *.DS_Store
+miscs/
