@@ -10,6 +10,10 @@
 
 ######################################################
 
+print STDOUT "EXECUTING runNUCmer.pl";
+print "testing execution of runNUCmer.pl";
+
+
 use strict;
 use warnings;
 use FindBin qw($RealBin);
@@ -70,6 +74,8 @@ my $ref_gaps;
 my $query_gaps;
 
 #$ENV{PATH}= "$bindir:/usr/local/bin:/usr/bin:/bin:/opt/apps/bin";
+
+print $query_dir;
 read_directory($query_dir);
 run_self_nucmer(@query);
 run_nucmer(@query);

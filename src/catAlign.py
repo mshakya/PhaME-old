@@ -1,7 +1,7 @@
 """
 author: nick miller
 
-This script takes in a fasta files with multiple genes and combines them into 1 sequence.
+class GeneCater takes in a fasta files with multiple genes and combines them into 1 sequence.
 Genes within the fasta files are cated together
 
 ex:
@@ -16,9 +16,16 @@ ex:
     output file
     >genes:
     ACTGTATTA
+
+Class prepContigs:
+    changes contigs names and
+    saves them into /files dir under the working dir
+
 """
 import sys
 import read_control
+import os
+
 
 class GeneCater:
 
@@ -27,18 +34,14 @@ class GeneCater:
         self.gene_map = {}
         control_obj = read_control.ParseFile()
         self.workdir = control_obj.workdir
-
+        self.refdir = control_obj.refdir
 
     def get_files(self, filename, directory):
 
-        gene_file = ""
         name = ""
 
-        #for single_file in files_list:
-        #filename = single_file
-
         try:
-            gene_file = open(directory+"/"+filename, "r")
+            gene_file = open(filename, "r")
         except IOError:
             print "Could not open \n" + str(filename)
             sys.exit("ERROR could not open " + str(filename))
@@ -47,7 +50,7 @@ class GeneCater:
             if line == "\n":
                 continue
             elif line[0] == ">":
-                line = line.rstrip('\n')
+                line = line.split(" ")[0]
                 name = line.split("|", 1)[0]
                 value = ""
             else:
@@ -55,7 +58,10 @@ class GeneCater:
                 value = line
             self.add_to_gene_map(name, value)
 
-        self.write_to_file(self.workdir+"/files/", filename)
+        if directory == self.refdir:
+            self.write_to_file(self.workdir+"/files/", filename)
+        elif directory == self.workdir:
+            self.write_to_file(self.workdir+"/files/", filename)   
 
     def add_to_gene_map(self, name, value):
 
@@ -67,21 +73,41 @@ class GeneCater:
 
     def write_to_file(self, output_dir, filename):
 
-        new_file = open(output_dir+filename, "w+")
+        base_file_name = os.path.split(filename)[1]
+        filename = base_file_name.split(".")[0]
+        filename += ".fna"
+        new_file = open(self.workdir+"/files/"+filename, "w+")
 
-        new_file.writelines(self.gene_map.keys()[0].split()[0] + "\n")
+        if not self.gene_map:
+            pass
+        else:
+            new_file.writelines(self.gene_map.keys()[0].split()[0] + "\n")
+            for item in self.gene_map:
 
-        for item in self.gene_map:
-            #new_file.writelines(item + "\n")
-            #new_file.writelines(item.split()[0] + "\n")
-            new_file.writelines(self.gene_map[item] + "\n")
+                new_file.writelines(self.gene_map[item] + "\n")
 
-# testing purposes
-# def main():
-#
-#     filename = "KJ660347.fasta"
-#     directory = "/Users/nick/PycharmProjects/PhaME/test/ref/"
-#
-#     GeneCater().get_files(directory+filename, "/Users/nick/PycharmProjects/PhaME/src")
-#
-# main()
+
+class prepContigs:
+
+        def change_name(self, filename, directory):
+            #save file extension as filename_contig.fna in files dir
+
+            #contig renamed to name1, name2 cut after space
+
+            file_handle_original = open(filename, "r")  # open file handle on original file
+            base_file_name = os.path.split(filename)[1]  # split full path to just grab the file name
+            base_file_name = base_file_name.split(".")[0] # remove file extension
+            file_handle_new = open(directory + "/files/"+base_file_name+"_contig.fna", "w") # create new file in /files to write to
+            count = 1 # counter for contig number
+
+            for line in file_handle_original:
+                if line.startswith(">"):
+                    line = ">"+base_file_name+str(count)
+                    file_handle_new.writelines(line + "\n")
+                    count += 1
+                else:
+                    file_handle_new.writelines(line)
+
+            file_handle_original.close()
+            file_handle_new.close()
+
