@@ -22,9 +22,9 @@ Provides evolutionary analyses (genes under positive selection) using CDS SNPs.
 
 * FastTree version >=2.1.8- Construction of phylogenetic tree
 
-* RAxML version >=8.0.26 - Maximum likelihood construction of phylogenetic tree
+* RAxML version >=8.0.26 - Maximum likelihood reconstruction of phylogenetic trees
 
-* mafft version >=7.0 - For optional evolutionary analyses
+* mafft version >=7.0 - Alignment tool
 
 * pal2nal version >=14 - For optional evolutionary analyses
 
@@ -91,7 +91,7 @@ INPUT files required
 
 * Directories structure
   - working directory/files
-      - permutated versions of references (concatenated chromosomes)
+      - permuted versions of references (concatenated chromosomes)
   - working directory/results
       - All output files generated
   - working directory/results/snps

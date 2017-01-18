@@ -1,18 +1,18 @@
-      refdir =/Users/nick/PycharmProjects/Phame/phame/test/ref  # directory where reference files are located
-      workdir =/Users/nick/PycharmProjects/Phame/phame/test  # directory where contigs/reads files are located and output is stored
-      perldir =/Users/nick/PycharmProjects/Phame/phame/perl_scripts  # directory where perl scripts are located
+      refdir =/Users/migunshakya/Desktop/PhaME/test/ref  # directory where reference files are located
+      workdir =/Users/migunshakya/Desktop/PhaME/test  # directory where contigs/reads files are located and output is stored
+      perldir =/Users/migunshakya/Desktop/PhaME/perl_scripts  # directory where perl scripts are located
 
 
     reference = 1  # 0:pick a random reference; 1:use given reference
-      reffile = Ecoli_11368.fna  # reference filename
+      reffile = ZEBOV_2007_0Luebo.fna  # reference filename
 
-      project = Ecoli_test  # main alignment file name
+      project = Ebola_test  # main alignment file name
 
       cdsSNPS = 0  # 0:no cds SNPS; 1:cds SNPs
 
     FirstTime = 1  # 1:yes; 2:update existing SNP alignment
 
-         data = 6  # *See below 0:only complete(F); 1:only contig(C); 2:only reads(R);
+         data = 4  # *See below 0:only complete(F); 1:only contig(C); 2:only reads(R);
                    # 3:combination F+C; 4:combination F+R; 5:combination C+R;
                    # 6:combination F+C+R; 7:realignment  *See below
         reads = 2  # 1: single reads; 2: paired reads; 3: both types present;

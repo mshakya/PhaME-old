@@ -36,8 +36,13 @@ download_ext () {
 
    if hash curl 2>/dev/null; then
     if [[ -n ${HTTP_PROXY} ]]; then
+          echo "Using proxy";
+          echo "curl --proxy $HTTP_PROXY -L $1 -o $2";
+          which curl
           curl --proxy $HTTP_PROXY -L $1  -o $2;
         else
+      echo "curl -L \$1 -o \$2";
+      #echo "Not using proxy";
       curl -L $1 -o $2;
     fi;
    else
@@ -109,7 +114,21 @@ echo "
 "
 }
 
-iinstall_bwa()
+install_cmake()
+{
+echo "--------------------------------------------------------------------------
+                           installing cmake v3.0.1
+--------------------------------------------------------------------------------
+"
+conda install --yes -c anaconda cmake=3.0.1
+echo "
+------------------------------------------------------------------------------
+                           cmake v3.0.1 installed
+------------------------------------------------------------------------------
+"
+}
+
+install_bwa()
 {
 echo "------------------------------------------------------------------------------
                            Downloading bwa v0.7.15
@@ -487,56 +506,39 @@ fi
 
 
 
-echo "Checking PAL2NAL ..."
+# echo "Checking PAL2NAL ..."
 
-PAL2NAL_VER=`pal2nal.pl 2>&1 | grep "pal2nal.pl" |  perl -nle 'print $& if m{v\d+}' | perl -nle 'print $& if m{\d+}' `;
+# PAL2NAL_VER=`pal2nal.pl 2>&1 | grep "pal2nal.pl" |  perl -nle 'print $& if m{v\d+}' | perl -nle 'print $& if m{\d+}' `;
 
-if ( hash pal2nal.pl 2>/dev/null ) && ( echo $PAL2NAL_VER | awk '{if($1>="14") exit 0; else exit 1}' )
-then
-   echo "PAL2NAL >=14 found.";
-else
-   echo "PAL2NAL >=14 not found. Trying to download from http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz ...";
-   download_ext http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz pal2nal.v14.tar.gz;
-   tar xvzf pal2nal.v14.tar.gz
-   cd $ROOTDIR;
-   cp pal2nal.v14/pal2nal.pl $ROOTDIR/;
-fi;
-done_message " Done." "";
+# if ( hash pal2nal.pl 2>/dev/null ) && ( echo $PAL2NAL_VER | awk '{if($1>="14") exit 0; else exit 1}' )
+# then
+#    echo "PAL2NAL >=14 found.";
+# else
+#    echo "PAL2NAL >=14 not found. Trying to download from http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz ...";
+#    download_ext http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz pal2nal.v14.tar.gz;
+#    tar xvzf pal2nal.v14.tar.gz
+#    cd $ROOTDIR/thirdParty;
+#    pwd;
+#    cp pal2nal.v14/pal2nal.pl $ROOTDIR/;
+# fi;
+# done_message " Done." "";
 
 
 
-echo "Checking jModeltest ..."
-if [ -f "$ROOTDIR/ext/opt/jmodeltest-2.1.10/jModelTest.jar" ]
-then
-  echo "jModeltest found";
-else
-  echo "jModeltest not found. Trying to download from https://github.com/ddarriba/jmodeltest2/files/157117/jmodeltest-2.1.10.tar.gz ...";
-  mkdir -p ext/opt;
-  mkdir -p ext/bin;
-  download_ext https://github.com/ddarriba/jmodeltest2/files/157117/jmodeltest-2.1.10.tar.gz ext/opt/jmodeltest-2.1.10.tar.gz;
-  cd ext/opt/
-  tar xvzf jmodeltest-2.1.10.tar.gz
-  cd $ROOTDIR
-fi
+# echo "Checking jModeltest ..."
+# if [ -f "$ROOTDIR/ext/opt/jmodeltest-2.1.10/jModelTest.jar" ]
+# then
+#   echo "jModeltest found";
+# else
+#   echo "jModeltest not found. Trying to download from https://github.com/ddarriba/jmodeltest2/files/157117/jmodeltest-2.1.10.tar.gz ...";
+#   mkdir -p ext/opt;
+#   mkdir -p ext/bin;
+#   download_ext https://github.com/ddarriba/jmodeltest2/files/157117/jmodeltest-2.1.10.tar.gz ext/opt/jmodeltest-2.1.10.tar.gz;
+#   cd ext/opt/
+#   tar xvzf jmodeltest-2.1.10.tar.gz
+#   cd $ROOTDIR
+# fi
 
-echo "Checking CMake the cross-platform, open-source build system. ..."
-
-CMake_VER=`cmake -version 2>&1 | perl -nle 'print $& if m{\d+\.\d+\.\d+}' `;
-
-if ( hash cmake 2>/dev/null ) && ( echo $CMake_VER | awk '{if($_>="3.0.0") exit 0; else exit 1}' )
-then
-   echo "CMake >=3.0.0 found."
-else
-   echo "CMake >=3.0.0 not found. Trying to download from https://github.com/Kitware/CMake/archive/master.zip ..."
-   mkdir -p ext/opt;
-   mkdir -p ext/bin;
-   download_ext https://github.com/Kitware/CMake/archive/master.zip ext/opt/CMake.zip;
-   unzip ext/opt/CMake.zip -d ext/opt/;
-   cd ext/opt/CMake-master;
-   ./bootstrap --prefix=$ROOTDIR/ext && make && make install
-   cd $ROOTDIR
-fi;
-done_message " Done." "";
 
 echo "Checking HyPhy ..."
 
@@ -546,10 +548,11 @@ if ( hash HYPHYMP 2>/dev/null ) && ( echo $HyPhy_VER | awk '{if($_>="2.2") exit 
 then
    echo "HyPhy >=2.2 found.";
 else
-   echo "HyPhy >=2.2 not found. Trying to download from https://github.com/veg/hyphy/archive/master.zip ...";
+   echo "HyPhy >=2.2 not found. Trying to download from https://github.com/veg/hyphy/archive/2.2.7.zip...";
    mkdir -p ext/opt;
    mkdir -p ext/bin;
-   download_ext https://github.com/veg/hyphy/archive/master.zip ext/opt/HyPhy.zip;
+   conda install --yes -c conda-forge ca-certificates=2016.9.26
+   download_ext https://github.com/veg/hyphy/archive/2.2.7.zip ext/opt/HyPhy.zip;
    unzip ext/opt/HyPhy.zip -d ext/opt/;
    cd ext/opt/hyphy-master;
    cmake -DINSTALL_PREFIX=$ROOTDIR/ext
@@ -559,34 +562,6 @@ else
    cd $ROOTDIR
 fi;
 done_message " Done." "";
-
-echo "Installing Perl dependencies..."
-
-if hash cpanm 2>/dev/null; then
-  echo "cpanm found. Start installing Perl dependencies..."
-else
-  echo "cpanm not found. Downloading from http://cpanmin.us..."
-  download_ext http://cpanmin.us ext/bin/cpanm;
-  chmod a+x ext/bin/cpanm;
-fi
-( set -xe;
-  perl -MGetopt::Long -e 1 > /dev/null 2>&1       || cpanm -v --notest -l ext Getopt::Long;
-  perl -MTime::HiRes -e 1 > /dev/null 2>&1        || cpanm -v --notest -l ext Time::HiRes;
-  perl -MFile::Path -e 1 > /dev/null 2>&1         || cpanm -v --notest -l ext File::Path;
-  perl -MFile::Basename -e 1 > /dev/null 2>&1     || cpanm -v --notest -l ext File::Basename;
-  perl -MFile::Copy -e 1 > /dev/null 2>&1         || cpanm -v --notest -l ext File::Copy;
-  perl -MIO::Handle -e 1 > /dev/null 2>&1         || cpanm -v --notest -l ext IO::Handle;
-  perl -MParallel::ForkManager -e 1 > /dev/null 2>&1           || cpanm -v --notest -l ext Parallel::ForkManager;
-  perl -MStatistics::Distributions -e 1 > /dev/null 2>&1         || cpanm -v --notest -l ext Statistics::Distributions;
-)
-done_message "Done installing Perl dependencies." "Failed installing Perl dependencies.";
-
-echo -n "Moving scripts...";
-( set -e;
-  cp src/*.pl bin/
-  chmod a+x bin/*
-)
-done_message " Done." "Failed installing PhaME scripts.";
 
 
 

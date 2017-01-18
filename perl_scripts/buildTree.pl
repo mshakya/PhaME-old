@@ -12,7 +12,7 @@ my $log=shift;
 
 if ($tree==1||$tree==3){
     print "\n";
-    my $fasttree="export OMP_NUM_THREADS=$thread; $bindir../ext/bin/FastTreeMP -nt -gtr < $outdir/$name\_snp_alignment.fna > $outdir/$name\.fasttree 2>>$error\n\n";
+    my $fasttree="export OMP_NUM_THREADS=$thread; FastTreeMP -nt -gtr < $outdir/$name\_snp_alignment.fna > $outdir/$name\.fasttree 2 >>$error\n";
     print $fasttree;
     if (system ($fasttree)){die "Error running $fasttree.\n";}
 
