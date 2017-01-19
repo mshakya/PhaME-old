@@ -13,6 +13,24 @@ cd $ROOTDIR
 mkdir -p thirdParty
 cd thirdParty
 
+# Minimum Required versions of dependencies
+miniconda_VER=4.2.12
+R_VER=3.3.1
+bowtie2_VER=2.2.8
+# nucmer 3.1 is packaged in mummer 3.23
+mummer_VER=3.1
+cmake_VER=3.0.1
+bwa_VER=0.7.15
+samtools_VER=1.3.1
+FastTree_VER=2.1.9
+RAxML_VER=8.2.9
+muscle_VER=3.8.31
+mafft_VER=7.305
+paml_VER=4.9
+cpanm_VER=1.7039
+
+#minimum required version of Perl modules
+perl_Getopt_Long_VER=2.45
 
 ################################################################################
 done_message () {
@@ -93,6 +111,16 @@ checkSystemInstallation()
     return 1
 }
 
+
+checkLocalInstallation()
+{
+    IFS=:
+    for d in $ROOTDIR/thirdParty/miniconda/bin; do
+      if test -x "$d/$1"; then return 0; fi
+    done
+    return 1
+}
+
 checkPerlModule()
 {
    perl -e "use lib \"$rootdir/lib\"; use $1;"
@@ -100,16 +128,30 @@ checkPerlModule()
 }
 
 ################################################################################
+install_cpanm()
+{
+echo "--------------------------------------------------------------------------
+                           installing cpanm v1.7039
+--------------------------------------------------------------------------------
+"
+conda install --yes -c bioconda perl-app-cpanminus=1.7039 -p $ROOTDIR/thirdParty/miniconda
+echo "
+------------------------------------------------------------------------------
+                           mummer v3.23 installed or nucmer 3.21
+------------------------------------------------------------------------------
+"  
+}
+
 install_mummer()
 {
 echo "--------------------------------------------------------------------------
-                           installing mummer v3.23
+                           installing mummer v3.23 or nucmer 3.21
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda mummer=3.23
+conda install --yes -c bioconda mummer=3.23 -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
-                           mummer v3.23 installed
+                           mummer v3.23 installed or nucmer 3.21
 ------------------------------------------------------------------------------
 "
 }
@@ -120,7 +162,7 @@ echo "--------------------------------------------------------------------------
                            installing cmake v3.0.1
 --------------------------------------------------------------------------------
 "
-conda install --yes -c anaconda cmake=3.0.1
+conda install --yes -c anaconda cmake=3.0.1 -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            cmake v3.0.1 installed
@@ -134,7 +176,7 @@ echo "--------------------------------------------------------------------------
                            Downloading bwa v0.7.15
 ------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda bwa=0.7.15
+conda install --yes -c bioconda bwa=0.7.15 -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            bwa v0.7.15 installed
@@ -148,7 +190,7 @@ echo "--------------------------------------------------------------------------
                            installing bowtie2 v2.2.8
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda bowtie2=2.2.8
+conda install --yes -c bioconda bowtie2=2.2.8 -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            bowtie2 v2.2.8 installed
@@ -162,7 +204,7 @@ echo "--------------------------------------------------------------------------
                            Downloading samtools v1.3.1
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda samtools=1.3.1
+conda install --yes -c bioconda samtools=1.3.1 -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            samtools v1.3.1 installed
@@ -170,30 +212,30 @@ echo "
 "
 }
 
-install_fasttree()
+install_FastTree()
 {
 echo "--------------------------------------------------------------------------
-                           Downloading fasttree v2.1.9
+                           Downloading FastTree v2.1.9
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda fasttree=2.1.9
+conda install --yes -c bioconda FastTree=2.1.9 -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
-                           fasttree v2.1.9
+                           FastTree v2.1.9
 --------------------------------------------------------------------------------
 "
 }
 
-install_raxml()
+install_RAxML()
 {
 echo "--------------------------------------------------------------------------
-                           Downloading raxml v8.2.9
+                           Downloading RAxML v8.2.9
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda raxml=8.2.9
+conda install --yes -c bioconda RAxML=8.2.9 -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
-                           raxml v8.2.9
+                           RAxML v8.2.9
 --------------------------------------------------------------------------------
 "
 }
@@ -204,7 +246,7 @@ echo "--------------------------------------------------------------------------
                            Downloading muscle v3.8.31
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda muscle=3.8.31
+conda install --yes -c bioconda muscle=3.8.31 -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            muscle v3.8.31
@@ -218,7 +260,7 @@ echo "--------------------------------------------------------------------------
                            Downloading mafft v7.305
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda mafft=7.305
+conda install --yes -c bioconda mafft=7.305 -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            mafft v7.305
@@ -232,7 +274,7 @@ echo "--------------------------------------------------------------------------
                            Downloading paml v4.9
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda paml=4.9
+conda install --yes -c bioconda paml=4.9 -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            paml v4.9
@@ -245,13 +287,13 @@ echo "
 install_perl_Getopt_Long()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module Getopt::Long
+                installing Perl Module Getopt::Long v2.45
 --------------------------------------------------------------------------------
 "
-cpanm Getopt::Long
+cpanm Getopt::Long@2.45
 echo "
 --------------------------------------------------------------------------------
-                           Getopt::Long installed
+                           Getopt::Long v2.45 installed
 --------------------------------------------------------------------------------
 "
 }
@@ -358,94 +400,195 @@ echo "
 if ( checkSystemInstallation conda )
 then
   echo "conda is found"
+  if [ -d "$ROOTDIR/thirdParty/miniconda" ]; then
+    echo "conda is installed and pointed to right environment"  
+  else
+    echo "Creating a separate conda enviroment ..."
+    conda create --yes -p $ROOTDIR/thirdParty/miniconda
+  fi
 else
   echo "conda is not found"
   install_miniconda
 fi
 
-if ( checkSystemInstallation mummer )
+################################################################################
+if ( checkSystemInstallation cpanm )
 then
-  echo "mummer is found"
-else
-  echo "mummer is not found"
-  install_mummer
+  cpanm_installed_VER=`cpanm -V 2>&1| head -n 1 | grep 'version' | perl -nle 'print $& if m{version \d+\.\d+}'`;
+  if  ( echo $cpanm_installed_VER $cpanm_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then 
+    echo " - found cpanm $cpanm_installed_VER"
+  else
+  echo "Required version of cpanm was not found"
+  install_cpanm
+  fi
+else 
+  echo "cpanm was not found"
+  install_cpanm
 fi
 
+################################################################################
+if ( checkSystemInstallation nucmer )
+then
+  mummer_installed_VER=`nucmer -v 2>&1| grep 'version' | perl -nle 'print $& if m{version \d+\.\d+}'`;
+  if  ( echo $mummer_installed_VER $mummer_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then 
+    echo " - found nucmer $mummer_installed_VER"
+  else
+  echo "Required version of nucmer was not found"
+  install_mummer
+  fi
+else 
+  echo "nucmer was not found"
+  install_mummer
+fi
+################################################################################
 
 if ( checkSystemInstallation bwa )
 then
-  echo "bwa is found"
+bwa_installed_VER=`bwa 2>&1| grep 'Version'  | perl -nle 'print $& if m{Version: \d+\.\d+\.\d+}'`;
+  if  ( echo $bwa_installed_VER $bwa_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then
+    echo " - found BWA $bwa_installed_VER"
+  else
+    install_bwa
+  fi
 else
   echo "bwa is not found"
   install_bwa
 fi
+################################################################################
 
 if ( checkSystemInstallation bowtie2 )
 then
-  echo "bowtie2 is found"
+bowtie2_installed_VER=`bowtie2 --version 2>&1 | grep 'version' | perl -nle 'print $& if m{version \d+\.\d+\.\d+}'`;
+  if (echo $bowtie2_installed_VER $bowtie2_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then
+    echo " - found bowtie2 $bowtie2_installed_VER"
+  else
+    echo "Required version of bowtie2 $bowtie2_VER was not found"
+    install_bowtie2
+  fi
 else
   echo "bowtie2 is not found"
   install_bowtie2
 fi
-
+################################################################################
 if ( checkSystemInstallation samtools )
 then
-  echo "samtools is found"
+  samtools_installed_VER=`samtools 2>&1| grep 'Version'|perl -nle 'print $& if m{Version: \d+\.\d+.\d+}'`;
+    if ( echo $samtools_installed_VER $samtools_VER| awk '{if($2>=$3) exit 0; else exit 1}' )
+    then
+    echo " - found samtools $samtools_installed_VER"
+    else
+    echo "Required version of samtools $samtools_VER was not found"
+    install_samtools
+    fi
 else
-  echo "samtools is not found"
   install_samtools
 fi
-
+################################################################################
 if ( checkSystemInstallation FastTree )
 then
-  echo "fasttree is found"
+  FastTree_installed_VER=`FastTree 2>&1| grep 'version'|perl -nle 'print $& if m{version \d+\.\d+.\d+}'`;
+  if ( echo $FastTree_installed_VER $FastTree_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then
+    echo " - found FastTree $FastTree_VER"
+  else
+    echo "Required version of $FastTree_VER was not found"
+      install_FastTree
+  fi
 else
-  echo "fasttree is not found"
-  install_fasttree
+    echo "FastTree was not found"
+    install_FastTree
 fi
 
-if ( checkSystemInstallation raxmlHPC )
+################################################################################
+if ( checkSystemInstallation RAxMLHPC )
 then
-  echo "raxml is found"
+  RAxMLHPC_installed_VER=`raxmlHPC -version 2>&1 | grep 'version' | perl -nle 'print $& if m{version \d+\.\d+\.\d+}'`
+  if ( echo $RAxMLHPC_installed_VER $RAxML_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then 
+    echo " - found RAxML $RAxMLHPC_installed_VER"
+  else
+    echo "Required version of $FastTree_VER was not found"
+      install_RAxML
+  fi  
 else
-  echo "raxml is not found"
-  install_raxml
+  echo "RAxML was not found"
+  install_RAxML
 fi
 
+################################################################################
 if ( checkSystemInstallation muscle )
 then
-  echo "muscle is found"
+muscle_installed_VER=`muscle -version 2>&1 | grep 'v' | perl -nle 'print $& if m{v\d+\.\d+\.\d+}'`;
+  if ( echo $muscle_installed_VER $muscle_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then
+    echo " - found muscle $muscle_installed_VER"
+  else
+    echo "Required version of $muscle_VER was not found"
+    install_muscle
+  fi
 else
-  echo "muscle is not found"
+  echo "muscle was not found"
   install_muscle
 fi
 
+################################################################################
 if ( checkSystemInstallation mafft )
 then
-  echo "mafft is found"
+  mafft_installed_VER=`mafft --version 2>&1 | grep 'v' | perl -nle 'print $& if m{v\d+\.\d+}'`;
+  if ( echo $mafft_installed_VER $mafft_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then 
+    echo " - found mafft $mafft_installed_VER"  
+  else
+  echo "Required version of mafft $mafft_VER was not found"
+  install_mafft
+  fi
 else
-  echo "mafft is not found"
+  echo "mafft was not found"
   install_mafft
 fi
-
+################################################################################
 if ( checkSystemInstallation codeml )
 then
-  echo "paml is found"
+  paml_installed_VER=`evolver \0 2>&1 | grep 'version' | perl -nle 'print $& if m{version \d+\.\d+}'`;
+  if ( echo $paml_installed_VER $paml_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then 
+    echo " - found paml $paml_installed_VER"
+  else 
+    echo "Required version of paml $paml_VER was not found"
+    install_paml
+  fi
 else
   echo "paml is not found"
   install_paml
 fi
 
+################################################################################
+#                                 Perl modules
+################################################################################
 if ( checkPerlModule Getopt::Long )
 then
   echo "Perl Getopt::Long is found"
+  perl_Getopt_Long_installed_VER= `cpan -D Getopt::Long 2>&1 | grep "Installed" | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_Getopt_Long_installed_VER $perl_Getopt_Long_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo "- found Perl module Getopt::Long $perl_Getopt_Long_installed_VER"
+  else
+    echo "Required version of Getopt::Long $perl_Getopt_Long_VER was not found"
+    install_perl_Getopt_Long
+  fi
 else
   echo "Perl Getopt::Long is not found"
   install_perl_Getopt_Long
 fi
 
+################################################################################
+
 if ( checkPerlModule Time::HiRes )
-then
+then@2.45
   echo "Perl Time::HiRes is found"
 else
   echo "Perl Time::HiRes is not found"
@@ -506,22 +649,6 @@ fi
 
 
 
-# echo "Checking PAL2NAL ..."
-
-# PAL2NAL_VER=`pal2nal.pl 2>&1 | grep "pal2nal.pl" |  perl -nle 'print $& if m{v\d+}' | perl -nle 'print $& if m{\d+}' `;
-
-# if ( hash pal2nal.pl 2>/dev/null ) && ( echo $PAL2NAL_VER | awk '{if($1>="14") exit 0; else exit 1}' )
-# then
-#    echo "PAL2NAL >=14 found.";
-# else
-#    echo "PAL2NAL >=14 not found. Trying to download from http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz ...";
-#    download_ext http://www.bork.embl.de/pal2nal/distribution/pal2nal.v14.tar.gz pal2nal.v14.tar.gz;
-#    tar xvzf pal2nal.v14.tar.gz
-#    cd $ROOTDIR/thirdParty;
-#    pwd;
-#    cp pal2nal.v14/pal2nal.pl $ROOTDIR/;
-# fi;
-# done_message " Done." "";
 
 
 
@@ -549,16 +676,12 @@ then
    echo "HyPhy >=2.2 found.";
 else
    echo "HyPhy >=2.2 not found. Trying to download from https://github.com/veg/hyphy/archive/2.2.7.zip...";
-   mkdir -p ext/opt;
-   mkdir -p ext/bin;
-   conda install --yes -c conda-forge ca-certificates=2016.9.26
-   download_ext https://github.com/veg/hyphy/archive/2.2.7.zip ext/opt/HyPhy.zip;
-   unzip ext/opt/HyPhy.zip -d ext/opt/;
-   cd ext/opt/hyphy-master;
-   cmake -DINSTALL_PREFIX=$ROOTDIR/ext
+   unzip $ROOTDIR/ext/opt/HyPhy_v227.zip -d $ROOTDIR/ext/;
+   cd $ROOTDIR/ext/hyphy-2.2.7;
+   cmake -DINSTALL_PREFIX=$ROOTDIR/thirdParty/miniconda/bin
    make MP2 && make install
    make GTEST
-    ./HYPHYGTEST
+   ./HYPHYGTEST
    cd $ROOTDIR
 fi;
 done_message " Done." "";
