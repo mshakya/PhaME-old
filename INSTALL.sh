@@ -14,23 +14,33 @@ mkdir -p thirdParty
 cd thirdParty
 
 # Minimum Required versions of dependencies
-miniconda_VER=4.2.12
-R_VER=3.3.1
-bowtie2_VER=2.2.8
 # nucmer 3.1 is packaged in mummer 3.23
-mummer_VER=3.1
-cmake_VER=3.0.1
+bowtie2_VER=2.2.8
 bwa_VER=0.7.15
-samtools_VER=1.3.1
-FastTree_VER=2.1.9
-RAxML_VER=8.2.9
-muscle_VER=3.8.31
-mafft_VER=7.305
-paml_VER=4.9
+cmake_VER=3.0.1
 cpanm_VER=1.7039
+FastTree_VER=2.1.9
+mafft_VER=7.305
+miniconda_VER=4.2.12
+mummer_VER=3.1
+muscle_VER=3.8.31
+paml_VER=4.9
+R_VER=3.3.1
+RAxML_VER=8.2.9
+samtools_VER=1.3.1
+perl5_VER=5.8.0
 
 #minimum required version of Perl modules
+perl_File_Basename_VER=2.85
+perl_File_Path_VER=2.09
 perl_Getopt_Long_VER=2.45
+perl_IO_Handle_VER=1.28
+perl_Parllel_ForkManager_VER=1.19
+perl_statistics_Distributions=1.02
+perl_Time_BaseName=2.85
+perl_Time_HiRes=1.9726
+
+
 
 ################################################################################
 done_message () {
@@ -301,13 +311,13 @@ echo "
 install_perl_Statistics_Distributions()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module Statistics::Distributions 
+          installing Perl Module Statistics::Distributions v1.02
 --------------------------------------------------------------------------------
 "
-cpanm Statistics::Distributions 
+cpanm Statistics::Distributions@1.02 
 echo "
 --------------------------------------------------------------------------------
-                          Statistics::Distributions installed
+                          Statistics::Distributions v1.02 installed
 --------------------------------------------------------------------------------
 "
 }
@@ -315,13 +325,13 @@ echo "
 install_perl_Time_HiRes()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module Time::HiRes
+                           installing Perl Module Time::HiRes v1.9726
 --------------------------------------------------------------------------------
 "
 cpanm Time::HiRes
 echo "
 --------------------------------------------------------------------------------
-                          Time::HiRes Resinstalled
+                          Time::HiRes v1.9726 installed
 --------------------------------------------------------------------------------
 "
 }
@@ -329,13 +339,13 @@ echo "
 install_perl_File_Path()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module File::Path
+                           installing Perl Module File::Path v2.09
 --------------------------------------------------------------------------------
 "
-cpanm File::Path
+cpanm File::Path@2.09
 echo "
 --------------------------------------------------------------------------------
-                          File::Path Resinstalled
+                          File::Path v2.09 installed 
 --------------------------------------------------------------------------------
 "
 }
@@ -343,13 +353,13 @@ echo "
 install_perl_File_Basename()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module File::Basename
+                           installing Perl Module File::Basename v2.85
 --------------------------------------------------------------------------------
 "
-cpanm File::Basename
+cpanm File::Basename@2.85
 echo "
 --------------------------------------------------------------------------------
-                          File::Basename Resinstalled
+                          File::Basename Resinstalled v2.85
 --------------------------------------------------------------------------------
 "
 }
@@ -357,13 +367,13 @@ echo "
 install_perl_File_Basename()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module File::Copy
+                           installing Perl Module File::Copy v2.30
 --------------------------------------------------------------------------------
 "
-cpanm File::Copy
+cpanm File::Copy@2.30
 echo "
 --------------------------------------------------------------------------------
-                          File::Copy Resinstalled
+                          File::Copy v2.30 installed 
 --------------------------------------------------------------------------------
 "
 }
@@ -371,13 +381,13 @@ echo "
 install_perl_IO_Handle()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module IO::Handle
+                       installing Perl Module IO::Handle v1.35
 --------------------------------------------------------------------------------
 "
-cpanm IO::Handle
+cpanm IO::Handle@1.35
 echo "
 --------------------------------------------------------------------------------
-                           IO::Handle Resinstalled
+                           IO::Handle v1.35 installed
 --------------------------------------------------------------------------------
 "
 }
@@ -386,13 +396,13 @@ echo "
 install_perl_Parallel_ForkManager()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module Parallel::ForkManager
+                           installing Perl Module Parallel::ForkManager v1.19
 --------------------------------------------------------------------------------
 "
-cpanm Parallel::ForkManager
+cpanm Parallel::ForkManager@1.19
 echo "
 --------------------------------------------------------------------------------
-                           Parallel::ForkManager Resinstalled
+                           Parallel::ForkManager v1.19 installed
 --------------------------------------------------------------------------------
 "
 }
@@ -407,8 +417,24 @@ then
     conda create --yes -p $ROOTDIR/thirdParty/miniconda
   fi
 else
-  echo "conda is not found"
+  echo "conda was not found"
   install_miniconda
+fi
+
+################################################################################
+if ( checkSystemInstallation perl )
+then
+  perl_installed_VER=`perl -v 2>&1| grep 'version' | perl -nle 'print $& if m{\d+\.\d+\.\d+}'`;
+  if  ( echo $perl_installed_VER $perl_VER | awk '{if($1>=$2) exit 0; else exit 1}' )
+  then 
+    echo " - found perl $perl_installed_VER"
+  else
+  echo "Required version of perl $perl_VER was not found"
+  install_perl
+  fi
+else 
+  echo "perl was not found"
+  install_perl
 fi
 
 ################################################################################
@@ -571,79 +597,127 @@ fi
 ################################################################################
 if ( checkPerlModule Getopt::Long )
 then
-  echo "Perl Getopt::Long is found"
-  perl_Getopt_Long_installed_VER= `cpan -D Getopt::Long 2>&1 | grep "Installed" | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  perl_Getopt_Long_installed_VER=`cpan -D Getopt::Long 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
   if ( echo $perl_Getopt_Long_installed_VER $perl_Getopt_Long_VER | awk '{if($2>=$3) exit 0; else exit 1}')
   then
-    echo "- found Perl module Getopt::Long $perl_Getopt_Long_installed_VER"
+    echo " - found Perl module Getopt::Long $perl_Getopt_Long_installed_VER"
   else
     echo "Required version of Getopt::Long $perl_Getopt_Long_VER was not found"
     install_perl_Getopt_Long
   fi
 else
-  echo "Perl Getopt::Long is not found"
+  echo "Perl Getopt::Long was not found"
   install_perl_Getopt_Long
 fi
 
-################################################################################
+#------------------------------------------------------------------------------#
 
 if ( checkPerlModule Time::HiRes )
-then@2.45
-  echo "Perl Time::HiRes is found"
+then
+  perl_Time_HiRes_installed_VER=`cpan -D Time::HiRes 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_Time_HiRes_installed_VER $perl_Time_HiReS_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo " - found Perl module Time::HiRes $perl_Time_HiRes_installed_VER"
+  else
+    echo "Required version of Time::HiRes $perl_Time_HiRes_VER was not found"
+    install_perl_Time_HiRes
+  fi
 else
-  echo "Perl Time::HiRes is not found"
+  echo "Perl Time::HiRes was not found"
   install_perl_Time_HiRes
 fi
-
+#------------------------------------------------------------------------------#
 if ( checkPerlModule File::Path )
 then
-  echo "Perl File::Path is found"
+  perl_File_Path_installed_VER=`cpan -D File::Path 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_File_Path_installed_VER $perl_File_Path_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo " - found Perl module File::Path $perl_File_Path_installed_VER"
+  else
+    echo "Required version of File::Path $perl_File_Path_VER was not found"
+    install_perl_File_Path
+  fi
 else
   echo "Perl File::Path is not found"
   install_perl_File_Path
 fi
-
+#------------------------------------------------------------------------------#
 if ( checkPerlModule File::Basename )
 then
+  perl_File_BaseName_installed_VER=`cpan -D File::BaseName 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_File_BaseName_installed_VER $perl_File_BaseName_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo " - found Perl module File::BaseName $perl_File_BaseName_installed_VER"
+  else
+    echo "Required version of File::BaseName $perl_File_BaseName_VER was not found"
+    install_perl_File_BaseName
+  fi
   echo "Perl File::Basename is found"
 else
   echo "Perl File::Basename is not found"
   install_perl_File_Basename
 fi
-
+#------------------------------------------------------------------------------#
 if ( checkPerlModule File::Copy )
 then
-  echo "Perl File::Copy is found"
+  perl_File_Copy_installed_VER=`cpan -D File::Copy 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_File_Copy_installed_VER $perl_File_Copy_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo " - found Perl module File::Copy $perl_File_Copy_installed_VER"
+  else
+    echo "Required version of File::Copy $perl_File_Copy_VER was not found"
+    install_perl_File_Copy
+  fi
 else
   echo "Perl File::Copy is not found"
   install_perl_File_Copy
 fi
-
+#------------------------------------------------------------------------------#
 if ( checkPerlModule IO::Handle )
 then
-  echo "Perl IO::Handle is found"
+  perl_IO_Handle_installed_VER=`cpan -D IO::Handle 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_IO_Handle_installed_VER $perl_IO_Handle_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo " - found Perl module IO::Handle $perl_IO_Handle_installed_VER"
+  else
+    echo "Required version of IO::Handle $perl_IO_Handle_VER was not found"
+    install_perl_IO_Handle
+  fi
 else
   echo "Perl IO::Handle is not found"
   install_perl_IO_Handle
 fi
 
-
+#------------------------------------------------------------------------------#
 if ( checkPerlModule Parallel::ForkManager )
 then
-  echo "Perl Parallel::ForkManager is found"
+  perl_Parallel_ForkManager_installed_VER=`cpan -D Parallel::ForkManager 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_Parallel_ForkManager_installed_VER $perl_Parallel_ForkManager_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo " - found Perl module Parallel::ForkManager $perl_Parallel_ForkManager_installed_VER"
+  else
+    echo "Required version of Parallel::ForkManager $perl_Parallel_ForkManager_VER was not found"
+    install_perl_Parallel_ForkManager
+  fi
 else
   echo "Perl Parallel::ForkManager is not found"
   install_perl_Parallel_ForkManager
 fi
-
+#------------------------------------------------------------------------------#
 if ( checkPerlModule Statistics::Distributions )
 then
-  echo "Perl Statistics::Distributions is found"
+  perl_Statistics_Distributions_installed_VER=`cpan -D Statistics::Distributions 2>&1 | grep 'Installed' | perl -nle 'print $& if m{Installed: \d+\.\d+}'`
+  if ( echo $perl_Statistics_Distributions_installed_VER $perl_Statistics_Distributions_VER | awk '{if($2>=$3) exit 0; else exit 1}')
+  then
+    echo " - found Perl module Statistics::Distributions $perl_Statistics_Distributions_installed_VER"
+  else
+    echo "Required version of Statistics::Distributions $perl_Statistics_Distributions_VER was not found"
+    install_perl_Statistics_Distributions
+  fi
 else
   echo "Perl Statistics::Distributions is not found"
   install_perl_Statistics_Distributions
 fi
-
 
 ################################################################################
 
