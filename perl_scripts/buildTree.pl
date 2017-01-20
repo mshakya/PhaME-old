@@ -16,7 +16,7 @@ if ($tree==1||$tree==3){
     print $fasttree;
     if (system ($fasttree)){die "Error running $fasttree.\n";}
 
-    my $rooted_tree_cmd= "$bindir../ext/bin/raxmlHPC-PTHREADS -T $thread -m GTRGAMMAI -f I -t $outdir/$name.fasttree -w $outdir -n $name 2>>$error >> $log\n\n";
+    my $rooted_tree_cmd= "raxmlHPC-PTHREADS -T $thread -m GTRGAMMAI -f I -t $outdir/$name.fasttree -w $outdir -n $name 2>>$error >> $log\n\n";
     eval{ system($rooted_tree_cmd);};
     system("mv $outdir/RAxML_rootedTree.$name $outdir/${name}_rooted.fasttree") if ( -e "$outdir/RAxML_rootedTree.$name");
     `rm $outdir/RAxML_info.$name`;
