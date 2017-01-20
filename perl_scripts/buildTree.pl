@@ -1,4 +1,4 @@
-
+#!/usr/bin/perl -w
 
 
 my $bindir=shift;
@@ -24,10 +24,10 @@ if ($tree==1||$tree==3){
 
 if ($tree==2||$tree==3){
     print "\n";
-    my $raxml="$bindir../ext/bin/raxmlHPC-PTHREADS -p 10 -T $thread -m GTRGAMMAI -s $outdir/$name\_snp_alignment.fna -w $outdir -n $name 2>>$error >> $log\n\n";
+    my $raxml="raxmlHPC-PTHREADS -p 10 -T $thread -m GTRGAMMAI -s $outdir/$name\_snp_alignment.fna -w $outdir -n $name 2>>$error >> $log\n\n";
     print $raxml;
     if (system ($raxml)){die "Error running $raxml.\n";}
-    my $rooted_tree_cmd= "$bindir../ext/bin/raxmlHPC-PTHREADS -T $thread -m GTRGAMMAI -f I -t $outdir/RAxML_bestTree.$name -w $outdir -n $name\_r 2>>$error >> $log\n\n";
+    my $rooted_tree_cmd= "raxmlHPC-PTHREADS -T $thread -m GTRGAMMAI -f I -t $outdir/RAxML_bestTree.$name -w $outdir -n $name\_r 2>>$error >> $log\n\n";
     print $rooted_tree_cmd;
     if (system ($rooted_tree_cmd)){die "Error running $rooted_tree_cmd.\n";}
 }
