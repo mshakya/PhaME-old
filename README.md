@@ -1,37 +1,39 @@
 # Phylogenetic and Molecular Evolution (PhaME) analysis tool
 
-Given a reference, PhaME extracts SNPs from complete genomes, draft genomes and/or reads.
+Given a reference and query genomes, PhaME extracts SNPs from complete genomes, draft genomes and/or reads.
 Uses SNP multiple sequence alignment to construct a phylogenetic tree.
 Provides evolutionary analyses (genes under positive selection) using CDS SNPs.
 
 
 --------------------------------------------------------------
 ## Version
-1.0
+1.5
 
 --------------------------------------------------------------
 ## SYSTEM REQUIREMENTS
 
+
+cpanm_VER=1.7039
+paml_VER=4.9
+R_VER=3.3.1
+RAxML_VER=8.2.9
+samtools_VER=1.3.1
+perl5_VER=5.8.0
+
+* Bowtie version >= 2.2.8 - Mapping of reads
+* cmake version >= 3.0.1 - for compiling HyPhy
+* FastTree version >=2.1.8 - Construction of phylogenetic tree
+* HyPhy version >=2.2 - For molecular evolution analysis
+* mafft version >=7.305 - Alignment tool
+* muscle version >=3.8.31 - Alignment tool
+* miniconda version 4.2.12 - For installing dependencies
+* MUMmer version 3.21 - Pairwise alignment using NUCmer
+* pal2nal version >=14 - For converting amino acid alignment to codon alignment
+* PAML version >=4.9 - For selection analyses
 * Perl version >5.8
-
-* MUMmer version 3.23 - Pairwise alignment using NUCmer
-
-* Bowtie version >=2.1.0 - Mapping of reads
-
-* SAMtools version 0.1.19 and vcftools - Convert BAM files created by Bowtie
-
-* FastTree version >=2.1.8- Construction of phylogenetic tree
-
 * RAxML version >=8.0.26 - Maximum likelihood reconstruction of phylogenetic trees
-
-* mafft version >=7.0 - Alignment tool
-
-* pal2nal version >=14 - For optional evolutionary analyses
-
-* paml version >=4.8 - For optional evolutionary analyses
-
-* HyPhy version >=2.2 - For optional evolutionary analyses
-
+* SAMtools version 0.1.19 and vcftools - Convert BAM files created by Bowtie
+* CPANM >=1.7039 - To instlall Perl packages.
 The C/C++ compiling enviroment might be required for installing dependencies. Systems may vary. Please assure that your system has the essential software building packages (e.g. build-essential for Ubuntu, XCODE for Mac...etc) installed properly before running the installing script.
 
 PhaME was tested successfully on our Linux servers (Ubuntu 14.04.3 LTS).
@@ -41,7 +43,7 @@ PhaME was tested successfully on our Linux servers (Ubuntu 14.04.3 LTS).
 
 You can use "git" to obtain the package:
 
-    $ git clone https://github.com/LANL-Bioinformatics/PhaME.git
+    $ git clone https://github.com/mshakya/PhaME.git
 
 ### Installing PhaME
 
