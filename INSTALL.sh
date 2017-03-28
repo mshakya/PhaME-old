@@ -144,7 +144,7 @@ echo "--------------------------------------------------------------------------
                            installing cpanm v1.7039
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda perl-app-cpanminus=1.7039 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda perl-app-cpanminus=$cpanm_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            mummer v3.23 installed or nucmer 3.21
@@ -158,7 +158,7 @@ echo "--------------------------------------------------------------------------
                            installing mummer v3.23 or nucmer 3.21
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda mummer=3.23 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda mummer=$mummer_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            mummer v3.23 installed or nucmer 3.21
@@ -172,7 +172,7 @@ echo "--------------------------------------------------------------------------
                            installing cmake v3.0.1
 --------------------------------------------------------------------------------
 "
-conda install --yes -c anaconda cmake=3.0.1 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c anaconda cmake=$cmake_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            cmake v3.0.1 installed
@@ -186,7 +186,7 @@ echo "--------------------------------------------------------------------------
                            Downloading bwa v0.7.15
 ------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda bwa=0.7.15 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda bwa=$bwa_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            bwa v0.7.15 installed
@@ -200,7 +200,7 @@ echo "--------------------------------------------------------------------------
                            installing bowtie2 v2.2.8
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda bowtie2=2.2.8 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda bowtie2=$bowtie2_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            bowtie2 v2.2.8 installed
@@ -214,7 +214,7 @@ echo "--------------------------------------------------------------------------
                            Downloading samtools v1.3.1
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda samtools=1.3.1 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda samtools=$samtools_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            samtools v1.3.1 installed
@@ -228,7 +228,7 @@ echo "--------------------------------------------------------------------------
                            Downloading FastTree v2.1.9
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda FastTree=2.1.9 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda FastTree=$FastTree_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            FastTree v2.1.9
@@ -242,7 +242,7 @@ echo "--------------------------------------------------------------------------
                            Downloading RAxML v8.2.9
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda RAxML=8.2.9 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda RAxML=$RAxML_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            RAxML v8.2.9
@@ -256,7 +256,7 @@ echo "--------------------------------------------------------------------------
                            Downloading muscle v3.8.31
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda muscle=3.8.31 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda muscle=$muscle_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            muscle v3.8.31
@@ -270,7 +270,7 @@ echo "--------------------------------------------------------------------------
                            Downloading mafft v7.305
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda mafft=7.305 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda mafft=$mafft_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            mafft v7.305
@@ -284,7 +284,7 @@ echo "--------------------------------------------------------------------------
                            Downloading paml v4.9
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda paml=4.9 -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda paml=$paml_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 --------------------------------------------------------------------------------
                            paml v4.9
@@ -300,7 +300,7 @@ echo "--------------------------------------------------------------------------
                 installing Perl Module Getopt::Long v2.45
 --------------------------------------------------------------------------------
 "
-cpanm Getopt::Long@2.45
+cpanm Getopt::Long@$perl_Getopt_Long_VER
 echo "
 --------------------------------------------------------------------------------
                            Getopt::Long v2.45 installed
@@ -314,7 +314,7 @@ echo "--------------------------------------------------------------------------
           installing Perl Module Statistics::Distributions v1.02
 --------------------------------------------------------------------------------
 "
-cpanm Statistics::Distributions@1.02 
+cpanm Statistics::Distributions@$perl_Statistics_Distributions_VER
 echo "
 --------------------------------------------------------------------------------
                           Statistics::Distributions v1.02 installed
@@ -328,7 +328,7 @@ echo "--------------------------------------------------------------------------
                            installing Perl Module Time::HiRes v1.9726
 --------------------------------------------------------------------------------
 "
-cpanm Time::HiRes
+cpanm Time::HiRes@$perl_Time_HiRes_VER
 echo "
 --------------------------------------------------------------------------------
                           Time::HiRes v1.9726 installed
@@ -342,7 +342,7 @@ echo "--------------------------------------------------------------------------
                            installing Perl Module File::Path v2.09
 --------------------------------------------------------------------------------
 "
-cpanm File::Path@2.09
+cpanm File::Path@$perl_File_Path_VER
 echo "
 --------------------------------------------------------------------------------
                           File::Path v2.09 installed 
@@ -356,7 +356,7 @@ echo "--------------------------------------------------------------------------
                            installing Perl Module File::Basename v2.85
 --------------------------------------------------------------------------------
 "
-cpanm File::Basename@2.85
+cpanm File::Basename@$perl_File_Basename_VER
 echo "
 --------------------------------------------------------------------------------
                           File::Basename Resinstalled v2.85
@@ -364,13 +364,13 @@ echo "
 "
 }
 
-install_perl_File_Basename()
+install_perl_File_Copy()
 {
 echo "--------------------------------------------------------------------------
                            installing Perl Module File::Copy v2.30
 --------------------------------------------------------------------------------
 "
-cpanm File::Copy@2.30
+cpanm File::Copy@$perl_File_Copy_VER
 echo "
 --------------------------------------------------------------------------------
                           File::Copy v2.30 installed 
@@ -384,7 +384,7 @@ echo "--------------------------------------------------------------------------
                        installing Perl Module IO::Handle v1.35
 --------------------------------------------------------------------------------
 "
-cpanm IO::Handle@1.35
+cpanm IO::Handle@$perl_IO_Handle_VER
 echo "
 --------------------------------------------------------------------------------
                            IO::Handle v1.35 installed
@@ -399,7 +399,7 @@ echo "--------------------------------------------------------------------------
                            installing Perl Module Parallel::ForkManager v1.19
 --------------------------------------------------------------------------------
 "
-cpanm Parallel::ForkManager@1.19
+conda install --yes -c bioconda perl-parallel-forkmanager=$perl_Parllel_ForkManager_VER
 echo "
 --------------------------------------------------------------------------------
                            Parallel::ForkManager v1.19 installed
@@ -451,6 +451,22 @@ then
 else 
   echo "cpanm was not found"
   install_cpanm
+fi
+
+################################################################################
+if ( checkSystemInstallation cmake )
+then
+  cmake_installed_VER=`cmake -V 2>&1| head -n 1 | grep 'version' | perl -nle 'print $& if m{version \d+\.\d+}'`;
+  if  ( echo $cmake_installed_VER $cmake_VER | awk '{if($2>=$3) exit 0; else exit 1}' )
+  then 
+    echo " - found cmake $cmake_installed_VER"
+  else
+  echo "Required version of cmake was not found"
+  install_cmake
+  fi
+else 
+  echo "cmake was not found"
+  install_cmake
 fi
 
 ################################################################################
