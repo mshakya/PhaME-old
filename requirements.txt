@@ -1,0 +1,4 @@
+subprocess
+nose
+sphinx
+shlex==1.5.2
