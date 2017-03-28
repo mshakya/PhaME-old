@@ -1,5 +1,5 @@
 from unittest import TestCase
-import src.read_control
+import phame.read_control
 
 
 class TestParseFile(TestCase):
