@@ -1,27 +1,28 @@
-
+#! /usr/bin/env python
 """
-author: Nick miller
+author: Migun Shakya, Nick miller.
+
 Phame pipeline in python
 
 DESCRIPTION
    runPhaME.pl is a wrapper to run the PhaME analysis pipeline
 
 USAGE
-   Control file "phame.ctl" needs to be copied and editted in the working director.
-   This wrapper runs the PhaME pipeline based on the settings of the control file.
+Control file "phame.ctl" needs to be copied and editted in the working director
+This wrapper runs the PhaME pipeline based on the settings of the control file.
 
 REQUIREMENTS
    See PhaME manual for a complete list of system and software requirements
 """
 
-
-import read_control
-import Check_files
-import catAlign
-import shlex
-import subprocess
+# import shlex
+# import subprocess
 import os
 import commands
+from phame import read_control
+from phame import Check_files
+from phame import catAlign
+
 
 class RunPhame:
 
