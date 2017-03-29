@@ -1,26 +1,34 @@
-"""
-author: Nick Miller
+#! /usr/bin/env python
+"""Parses control file.
 
 This script reads in and parses the PhaME control file.
 It will be used to provide information to other scripts in the pipeline
+
+author: Nick Miller, Migun Shakya
 
 """
 import os
 
 
-class get_control_file_path:
+# class get_control_file_path:
+# class GetControlFilePath:
+#     """Gets path for control files."""
 
-    user_input = raw_input("Please enter path to phame.ctl file \n")
+#     user_input = raw_input("Please enter path to phame.ctl file \n")
 
-    if os.path.exists(user_input):
-        pass
-    else:
-        exit(user_input + " could not be found. Check to make sure your path is correct and try again ")
+#     if os.path.exists(user_input):
+#         pass
+#     else:
+#         exit(user_input + " is not found. Please check to make sure your path is\
+#         correct and try again ")
+#     controle_file_path = user_input
 
-    controle_file_path = user_input
 
+class ParseFile():
+    """A class that holds the information from ctl file."""
 
-class ParseFile:
+    def __init__(self):
+        """Initialize."""
 
     refdir = ""
     workdir = ""
@@ -43,21 +51,16 @@ class ParseFile:
     cutoff = ""
 
     def read_file(self, controle_file_path):
-
+        """Read and parses control files."""
         if os.path.exists(controle_file_path):
-
             control_file = open(controle_file_path, "r")
-
             for line in control_file:
-
                 line = line.strip()
                 if line:
                     pass
                 else:
                     continue
-
                 words = line.split()
-
                 if words[0] == "refdir":
                     refdir = line.split("=")[1].partition("#")[0].strip()
                     ParseFile.refdir = refdir
