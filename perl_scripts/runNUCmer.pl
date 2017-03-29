@@ -21,7 +21,7 @@ use File::Basename;
 use Parallel::ForkManager;
 
 # set up environments
-$ENV{PATH} = "$RealBin:$RealBin/../ext/bin:$ENV{PATH}";
+$ENV{PATH} = "$RealBin:$RealBin/../ext/bin:../perl_scripts:$ENV{PATH}";
 
 my $breaklen        = 200;
 my $mincluster      = 65;
