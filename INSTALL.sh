@@ -22,7 +22,7 @@ cpanm_VER=1.7039
 FastTree_VER=2.1.9
 mafft_VER=7.305
 miniconda_VER=4.2.12
-mummer_VER=3.1
+mummer_VER=3.23
 muscle_VER=3.8.31
 paml_VER=4.9
 R_VER=3.3.1
@@ -145,6 +145,35 @@ echo "--------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 "
 conda install --yes -c bioconda perl-app-cpanminus=$cpanm_VER -p $ROOTDIR/thirdParty/miniconda
+
+################################################################################
+#         Add path to bash, need this also here so cpanm could be in path
+################################################################################
+if [ -f $HOME/.bashrc ]
+then
+{
+  echo "#Added by PhaME pipeline installation" >> $HOME/.bashrc
+  echo "export PATH=$ROOTDIR/thirdParty/miniconda/bin:$PATH" >> $HOME/.bashrc
+  source $HOME/.bashrc 
+  echo "
+--------------------------------------------------------------------------------
+                           added path to .bashrc
+--------------------------------------------------------------------------------
+"
+}
+else
+{
+  echo "#Added by PhaME pipeline installation" >> $HOME/.bash_profile
+  echo "export PATH=$ROOTDIR/thirdParty/miniconda/bin:$PATH" >> $HOME/.bash_profile
+  source $HOME/.bash_profile 
+  echo "
+--------------------------------------------------------------------------------
+                           added path to .bash_profile
+--------------------------------------------------------------------------------
+"
+}
+fi
+
 echo "
 ------------------------------------------------------------------------------
                            mummer v3.23 installed or nucmer 3.21
