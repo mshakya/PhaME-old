@@ -146,6 +146,8 @@ echo "--------------------------------------------------------------------------
 "
 conda install --yes -c bioconda perl-app-cpanminus=$cpanm_VER -p $ROOTDIR/thirdParty/miniconda
 
+}
+
 ################################################################################
 #         Add path to bash, need this also here so cpanm could be in path
 ################################################################################
@@ -808,33 +810,33 @@ done_message " Done." "";
 
 
 
-################################################################################
-#                       Add path to bash
-################################################################################
-if [ -f $HOME/.bashrc ]
-then
-{
-  echo "#Added by PhaME pipeline installation" >> $HOME/.bashrc
-  echo "export PATH=$ROOTDIR/thirdParty/miniconda/bin:$PATH" >> $HOME/.bashrc
-  source $HOME/.bashrc 
-  echo "
---------------------------------------------------------------------------------
-                           added path to .bashrc
---------------------------------------------------------------------------------
-"
-}
-else
-{
-  echo "#Added by PhaME pipeline installation" >> $HOME/.bash_profile
-  echo "export PATH=$ROOTDIR/thirdParty/miniconda/bin:$PATH" >> $HOME/.bash_profile
-  source $HOME/.bash_profile 
-  echo "
---------------------------------------------------------------------------------
-                           added path to .bash_profile
---------------------------------------------------------------------------------
-"
-}
-fi
+# ################################################################################
+# #                       Add path to bash
+# ################################################################################
+# if [ -f $HOME/.bashrc ]
+# then
+# {
+#   echo "#Added by PhaME pipeline installation" >> $HOME/.bashrc
+#   echo "export PATH=$ROOTDIR/thirdParty/miniconda/bin:$PATH" >> $HOME/.bashrc
+#   source $HOME/.bashrc 
+#   echo "
+# --------------------------------------------------------------------------------
+#                            added path to .bashrc
+# --------------------------------------------------------------------------------
+# "
+# }
+# else
+# {
+#   echo "#Added by PhaME pipeline installation" >> $HOME/.bash_profile
+#   echo "export PATH=$ROOTDIR/thirdParty/miniconda/bin:$PATH" >> $HOME/.bash_profile
+#   source $HOME/.bash_profile 
+#   echo "
+# --------------------------------------------------------------------------------
+#                            added path to .bash_profile
+# --------------------------------------------------------------------------------
+# "
+# }
+# fi
 
 echo "
 ================================================================================
