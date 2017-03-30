@@ -187,7 +187,8 @@ echo "--------------------------------------------------------------------------
                            installing mummer v3.23 or nucmer 3.21
 --------------------------------------------------------------------------------
 "
-conda install --yes -c bioconda mummer=$mummer_VER -p $ROOTDIR/thirdParty/miniconda
+conda install --yes -c bioconda mummer -p $ROOTDIR/thirdParty/miniconda
+# conda install --yes -c bioconda mummer=$mummer_VER -p $ROOTDIR/thirdParty/miniconda
 echo "
 ------------------------------------------------------------------------------
                            mummer v3.23 installed or nucmer 3.21
