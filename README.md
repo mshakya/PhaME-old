@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mshakya/PhaME.svg?branch=master)](https://travis-ci.org/mshakya/PhaME)
+
 # Phylogenetic and Molecular Evolution (PhaME) analysis tool
 
 Given a reference and query genomes, PhaME extracts SNPs from complete genomes, draft genomes and/or reads.
@@ -33,8 +35,8 @@ perl5_VER=5.8.0
 * Perl version >5.8
 * RAxML version >=8.0.26 - Maximum likelihood reconstruction of phylogenetic trees
 * SAMtools version 0.1.19 and vcftools - Convert BAM files created by Bowtie
-* CPANM >=1.7039 - To instlall Perl packages.
-The C/C++ compiling enviroment might be required for installing dependencies. Systems may vary. Please assure that your system has the essential software building packages (e.g. build-essential for Ubuntu, XCODE for Mac...etc) installed properly before running the installing script.
+* CPANM >=1.7039 - To install Perl packages.
+The C/C++ compiling environment might be required for installing dependencies. Systems may vary. Please assure that your system has the essential software building packages (e.g. build-essential for Ubuntu, XCODE for Mac...etc) installed properly before running the installing script.
 
 PhaME was tested successfully on our Linux servers (Ubuntu 14.04.3 LTS).
 
@@ -126,6 +128,7 @@ bioRxiv doi: http://dx.doi.org/10.1101/032250
 --------------------------------------------------------------
 ## Contact
 
+Shakya, Migun <migun at lanl.gov>
 Ahmed, Sanaa Afroz <sahmed at lanl.gov>
 
 --------------------------------------------------------------
