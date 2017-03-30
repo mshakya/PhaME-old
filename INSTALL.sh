@@ -22,7 +22,7 @@ cpanm_VER=1.7039
 FastTree_VER=2.1.9
 mafft_VER=7.305
 miniconda_VER=4.2.12
-mummer_VER=3.23
+mummer_VER=3.1
 muscle_VER=3.8.31
 paml_VER=4.9
 R_VER=3.3.1
@@ -35,10 +35,11 @@ perl_File_Basename_VER=2.85
 perl_File_Path_VER=2.09
 perl_Getopt_Long_VER=2.45
 perl_IO_Handle_VER=1.28
-perl_Parllel_ForkManager_VER=1.19
+perl_Parllel_ForkManager_VER=1.17
 perl_statistics_Distributions=1.02
 perl_Time_BaseName=2.85
 perl_Time_HiRes=1.9726
+perl_Statistics_Distributions_VER=1.02
 
 
 
@@ -421,13 +422,13 @@ echo "
 install_perl_Parallel_ForkManager()
 {
 echo "--------------------------------------------------------------------------
-                           installing Perl Module Parallel::ForkManager v1.19
+                           installing Perl Module Parallel::ForkManager v1.17
 --------------------------------------------------------------------------------
 "
 conda install --yes -c bioconda perl-parallel-forkmanager=$perl_Parllel_ForkManager_VER
 echo "
 --------------------------------------------------------------------------------
-                           Parallel::ForkManager v1.19 installed
+                           Parallel::ForkManager v1.17 installed
 --------------------------------------------------------------------------------
 "
 }
