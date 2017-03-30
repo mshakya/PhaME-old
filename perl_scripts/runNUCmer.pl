@@ -61,7 +61,7 @@ if ( $thread < 1 || $thread > $max_thread ) {
 
 # create folders within output directory
 if ( !-e $outdir ) {
-    `mkdir -p $outdir`;
+    `mkdir -p $outdir $outdir/gaps $outdir/snps $outdir/delta $outdir/stats $outdir/temp $outdir/filters`;
 }
 elsif ( !-e "$outdir/gaps" ) {
     `mkdir -p "$outdir/gaps"`;
@@ -69,14 +69,19 @@ elsif ( !-e "$outdir/gaps" ) {
 elsif ( !-e "$outdir/snps" ) {
     `mkdir -p "$outdir/snps"`;
 }
+elsif ( !-e "$outdir/delta" ) {
+    `mkdir -p "$outdir/delta"`;
+}
 elsif ( !-e "$outdir/stats" ) {
     `mkdir -p "$outdir/stats"`;
 }
 elsif ( !-e "$outdir/temp" ) {
     `mkdir -p "$outdir/temp"`;
 }
-
-# options to use if input genomes are from viruses
+elsif ( !-e "$outdir/filters" ) {
+    `mkdir -p "$outdir/filters"`;
+}
+# Options to use if input genomes are from viruses
 if ( $code !~ /virus/ ) {
     my $options
         = "--maxmatch -b $breaklen -c $mincluster -d $diagfactor -g $maxgap -l $minmatch ";
@@ -194,21 +199,31 @@ sub run_nucmer {
         my $first_fasta  = $outdir . '/' . $first_name . '_norepeats.fna';
         my $second_fasta = $outdir . '/' . $second_name . '_norepeats.fna';
 
-        print "Running nucmer on $prefix1\n";
+        print "Running nucmer1 on $prefix1\n";
         my $nucmer_command1
             = "nucmer $options -p $prefix1 $first_fasta $second_fasta  2>/dev/null";
+        print "$nucmer_command1";
+
         if ( system($nucmer_command1) ) {
             die "Error running nucmer_command1 $nucmer_command1.\n";
         }
+        else {
+            my $delta_file = join( '.', $prefix1, "delta" );
+            my $dest_delta = join( '/', $outdir, "delta", $delta_file );
+            `mv $delta_file $dest_delta`;
+        }
 
+        print "Running filter on $prefix1\n";
         my $filter_command1
-            = "delta-filter -1 $identity $outdir/$prefix1.delta > $outdir/$prefix1.snpfilter";
+            = "delta-filter -1 $identity $outdir/delta/$prefix1.delta > $outdir/filters/$prefix1.snpfilter";
+
         if ( system($filter_command1) ) {
             die "Error running filter_command1 $filter_command1.\n";
         }
 
+        print "Running snp_command1 on $prefix1\n";
         my $snp_command1
-            = "show-snps -CT $outdir/$prefix1.snpfilter > $outdir/$prefix1.snps";
+            = "show-snps -CT $outdir/filters/$prefix1.snpfilter > $outdir/snps/$prefix1.snps";
         if ( system($snp_command1) ) {
             die "Error running snp_command1 $snp_command1.\n";
         }
@@ -216,36 +231,50 @@ sub run_nucmer {
         $snp_indel =~ s/\n//;
         ( $snp_n, $indel_n ) = split /\t/, $snp_indel;
 
+        print "Running filter_command2 on $prefix1\n";
         my $filter_command2
-            = "delta-filter -1 $identity $outdir/$prefix1.delta > $outdir/$prefix1.gapfilter";
+            = "delta-filter -1 $identity $outdir/delta/$prefix1.delta > $outdir/filters/$prefix1.gapfilter";
         if ( system($filter_command2) ) {
             die "Error running filter_command2 $filter_command2.\n";
         }
 
+        print "Running coords command on $prefix1\n";
         my $coords_command1
-            = "show-coords -clTr $outdir/$prefix1.gapfilter > $outdir/$prefix1.coords";
+            = "show-coords -clTr $outdir/filters/$prefix1.gapfilter > $outdir/$prefix1.coords";
         if ( system($coords_command1) ) {
             die "Error running coords_command1 $coords_command1.\n";
         }
+
+        print "Running gaps1 command on $prefix1\n";
         my $gaps1
             = `parseGapsNUCmer.pl $gap_cutoff $outdir/$prefix1.coords 2>/dev/null`;
-        ( $ref_gaps, $query_gaps, undef ) = split /\n/, $gaps1;
+        # ( $ref_gaps, $query_gaps, undef ) = split /\n/, $gaps1;
+        my $gaps_file1 = join('.', $prefix1, 'gaps');
+        print "$gaps_file1\n";
+        `mv $gaps_file1 $outdir/gaps`;
 
-        print "Running nucmer on $prefix2\n";
+
+        print "Running nucmer2 on $prefix2\n";
         my $nucmer_command2
             = "nucmer $options -p $prefix2 $second_fasta $first_fasta  2>/dev/null";
+        print $nucmer_command2;
         if ( system($nucmer_command2) ) {
             die "Error running nucmer_command2 $nucmer_command2.\n";
         }
+        else {
+            my $delta_file = join( '.', $prefix2, "delta" );
+            my $dest_delta = join( '/', $outdir, "delta", $delta_file );
+            `mv $delta_file $dest_delta`;
+        }
 
         my $filter_command3
-            = "delta-filter -1 $identity $outdir/$prefix2.delta > $outdir/$prefix2.snpfilter";
+            = "delta-filter -1 $identity $outdir/delta/$prefix2.delta > $outdir/filters/$prefix2.snpfilter";
         if ( system($filter_command3) ) {
             die "Error running filter_command3 $filter_command3.\n";
         }
 
         my $snp_command2
-            = "show-snps -CT $outdir/$prefix2.snpfilter > $outdir/$prefix2.snps";
+            = "show-snps -CT $outdir/filters/$prefix2.snpfilter > $outdir/$prefix2.snps";
         if ( system($snp_command2) ) {
             die "Error running snp_command2 $snp_command2.\n";
         }
@@ -254,22 +283,25 @@ sub run_nucmer {
         ( $snp_n, $indel_n ) = split /\t/, $snp_indel;
 
         my $filter_command4
-            = "delta-filter $identity $outdir/$prefix2.delta > $outdir/$prefix2.gapfilter";
+            = "delta-filter $identity $outdir/delta/$prefix2.delta > $outdir/filters/$prefix2.gapfilter";
         if ( system($filter_command4) ) {
             die "Error running filter_command4 $filter_command4.\n";
         }
 
         my $coords_command2
-            = "show-coords -clTr $outdir/$prefix2.gapfilter > $outdir/$prefix2.coords";
+            = "show-coords -clTr $outdir/filter/$prefix2.gapfilter > $outdir/$prefix2.coords";
         if ( system($coords_command2) ) {
             die "Error running coords_command2 $coords_command2.\n";
         }
 
         my $gaps2
             = `parseGapsNUCmer.pl $gap_cutoff $outdir/$prefix2.coords 2>/dev/null`;
+        my $gaps_file2 = join('.', $prefix2, 'gaps');
+        print "$gaps_file2\n";
+        `mv $gaps_file2 $outdir/gaps`;
 
         my $check
-            = `checkNUCmer.pl -i $outdir/$first_name\_$second_name.gaps -r $reference`;
+            = `checkNUCmer.pl -i $outdir/gaps/$first_name\_$second_name.gaps -r $reference`;
         if ( $check == 1 ) {
             print "$second_name aligned < 25% of the $first_name genome\n";
         }
