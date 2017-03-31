@@ -198,11 +198,12 @@ sub run_nucmer {
 
         my $first_fasta  = $outdir . '/' . $first_name . '_norepeats.fna';
         my $second_fasta = $outdir . '/' . $second_name . '_norepeats.fna';
-
-        print "Running nucmer1 on $prefix1\n";
+################################################################################
+        print "##############################################################\n";
+        print "# Running first instance of nucmer on $prefix1\n";
+        print "#############################################################\n\n";
         my $nucmer_command1
             = "nucmer $options -p $prefix1 $first_fasta $second_fasta  2>/dev/null";
-        print "$nucmer_command1";
 
         if ( system($nucmer_command1) ) {
             die "Error running nucmer_command1 $nucmer_command1.\n";
@@ -212,16 +213,20 @@ sub run_nucmer {
             my $dest_delta = join( '/', $outdir, "delta", $delta_file );
             `mv $delta_file $dest_delta`;
         }
-
-        print "Running filter on $prefix1\n";
+################################################################################
+        print "#############################################################\n";
+        print "# Running first instance of filter (delta-filter) on $prefix1\n";
+        print "#############################################################\n\n";
         my $filter_command1
             = "delta-filter -1 $identity $outdir/delta/$prefix1.delta > $outdir/filters/$prefix1.snpfilter";
 
         if ( system($filter_command1) ) {
             die "Error running filter_command1 $filter_command1.\n";
         }
-
-        print "Running snp_command1 on $prefix1\n";
+################################################################################
+        print "#############################################################\n";
+        print "# Running first instance of snp finding (show-snps) on $prefix1\n";
+        print "############################################################\n\n";
         my $snp_command1
             = "show-snps -CT $outdir/filters/$prefix1.snpfilter > $outdir/snps/$prefix1.snps";
         if ( system($snp_command1) ) {
@@ -230,34 +235,46 @@ sub run_nucmer {
         $snp_indel = `SNP_INDEL_count.pl $outdir/$prefix1.snps`;
         $snp_indel =~ s/\n//;
         ( $snp_n, $indel_n ) = split /\t/, $snp_indel;
-
-        print "Running filter_command2 on $prefix1\n";
+################################################################################
+        print "#############################################################\n";
+        print "# Running filter_command2 (delta-filter) on $prefix1\n";
+        print "############################################################\n\n";
         my $filter_command2
             = "delta-filter -1 $identity $outdir/delta/$prefix1.delta > $outdir/filters/$prefix1.gapfilter";
         if ( system($filter_command2) ) {
             die "Error running filter_command2 $filter_command2.\n";
         }
-
-        print "Running coords command on $prefix1\n";
+################################################################################
+        print "#############################################################\n";
+        print "# Running coords command (show-coords) on $prefix1\n";
+        print "############################################################\n\n";
         my $coords_command1
             = "show-coords -clTr $outdir/filters/$prefix1.gapfilter > $outdir/$prefix1.coords";
         if ( system($coords_command1) ) {
             die "Error running coords_command1 $coords_command1.\n";
         }
-
-        print "Running gaps1 command on $prefix1\n";
+################################################################################
+        print "#############################################################\n";
+        print "# Running gaps (parseGapsNUCmer.pl) command on $prefix1\n";
+        print "#############################################################\n\n";
         my $gaps1
-            = `parseGapsNUCmer.pl $gap_cutoff $outdir/$prefix1.coords 2>/dev/null`;
+            = "parseGapsNUCmer.pl $gap_cutoff $outdir/$prefix1.coords 2>/dev/null";
         # ( $ref_gaps, $query_gaps, undef ) = split /\n/, $gaps1;
+        # my $gaps_file1 = join('.', $prefix1, 'gaps');
+        # print "$gaps_file1\n";
+
+        if ( system($gaps1) ) {
+            die "Error running gaps1 $gaps1.\n";
+        }
         my $gaps_file1 = join('.', $prefix1, 'gaps');
-        print "$gaps_file1\n";
         `mv $gaps_file1 $outdir/gaps`;
 
-
-        print "Running nucmer2 on $prefix2\n";
+################################################################################
+        print "#############################################################\n";
+        print "Running nucmer on $prefix2\n";
+        print "#############################################################\n\n";
         my $nucmer_command2
             = "nucmer $options -p $prefix2 $second_fasta $first_fasta  2>/dev/null";
-        print $nucmer_command2;
         if ( system($nucmer_command2) ) {
             die "Error running nucmer_command2 $nucmer_command2.\n";
         }
@@ -266,39 +283,63 @@ sub run_nucmer {
             my $dest_delta = join( '/', $outdir, "delta", $delta_file );
             `mv $delta_file $dest_delta`;
         }
-
+################################################################################
+        print "#############################################################\n";
+        print "# Running delta-filter command on $prefix2\n";
+        print "#############################################################\n\n";
         my $filter_command3
             = "delta-filter -1 $identity $outdir/delta/$prefix2.delta > $outdir/filters/$prefix2.snpfilter";
         if ( system($filter_command3) ) {
             die "Error running filter_command3 $filter_command3.\n";
         }
-
+################################################################################
+        print "#############################################################\n";
+        print "# Running snp (show-snps) on $prefix2\n";
+        print "#############################################################\n\n";
         my $snp_command2
-            = "show-snps -CT $outdir/filters/$prefix2.snpfilter > $outdir/$prefix2.snps";
+            = "show-snps -CT $outdir/filters/$prefix2.snpfilter > $outdir/snps/$prefix2.snps";
         if ( system($snp_command2) ) {
             die "Error running snp_command2 $snp_command2.\n";
         }
-        $snp_indel = `SNP_INDEL_count.pl $outdir/$prefix2.snps`;
+        $snp_indel = `SNP_INDEL_count.pl $outdir/snps/$prefix2.snps`;
         $snp_indel =~ s/\n//;
         ( $snp_n, $indel_n ) = split /\t/, $snp_indel;
+################################################################################
+        print "#############################################################\n";
+        print "# Running delta-filter command on $prefix2\n";
+        print "#############################################################\n\n";
 
         my $filter_command4
             = "delta-filter $identity $outdir/delta/$prefix2.delta > $outdir/filters/$prefix2.gapfilter";
         if ( system($filter_command4) ) {
             die "Error running filter_command4 $filter_command4.\n";
         }
+################################################################################
+        print "#############################################################\n";
+        print "# Running (show-coords) command on $prefix2\n";
+        print "#############################################################\n\n";
 
         my $coords_command2
-            = "show-coords -clTr $outdir/filter/$prefix2.gapfilter > $outdir/$prefix2.coords";
+            = "show-coords -clTr $outdir/filters/$prefix2.gapfilter > $outdir/stats/$prefix2.coords";
         if ( system($coords_command2) ) {
             die "Error running coords_command2 $coords_command2.\n";
         }
+################################################################################
+        print "#############################################################\n";
+        print "# Running gaps (parseGapsNUCmer) command on $prefix2\n";
+        print "#############################################################\n\n";
 
         my $gaps2
-            = `parseGapsNUCmer.pl $gap_cutoff $outdir/$prefix2.coords 2>/dev/null`;
+            = "parseGapsNUCmer.pl $gap_cutoff $outdir/stats/$prefix2.coords 2>/dev/null";
+        if ( system($gaps2) ) {
+            die "Error running gaps1 $gaps1.\n";
+        }
         my $gaps_file2 = join('.', $prefix2, 'gaps');
-        print "$gaps_file2\n";
-        `mv $gaps_file2 $outdir/gaps`;
+        `mv $gaps_file2 $outdir/gaps/`;
+################################################################################
+        print "#############################################################\n";
+        print "# Checking (checkNUCmer.pl) alignment proportions\n";
+        print "#############################################################\n\n";
 
         my $check
             = `checkNUCmer.pl -i $outdir/gaps/$first_name\_$second_name.gaps -r $reference`;
@@ -307,10 +348,13 @@ sub run_nucmer {
         }
 
         $check
-            = `checkNUCmer.pl -i $outdir/$second_name\_$first_name.gaps -r $query`;
+            = `checkNUCmer.pl -i $outdir/gaps/$second_name\_$first_name.gaps -r $query`;
         if ( $check == 1 ) {
             print "$first_name aligned < 25% of the $second_name genome\n";
         }
+        # removing all gaps file
+        #TODO: Need to check why its being written in the first place
+        `rm *.gaps`;
 
         ( $ref_gaps, $query_gaps, undef ) = split /\n/, $gaps2;
 
@@ -354,8 +398,6 @@ sub cleanup {
     if ( -e "$outdir/*.mgaps" ) { unlink "$outdir/*.mgaps" }
     if ( -e "$outdir/*.ntref" ) { unlink "$outdir/*.ntref" }
     `cat $outdir/*_repeat_stats.txt > $outdir/repeat_stats.txt`;
-    `mv $outdir/*.snps $outdir/snps`;
-    `mv $outdir/*.gaps $outdir/gaps`;
     `mv $outdir/*_stats.txt $outdir/stats`;
     `mv $outdir/*_coords.txt $outdir/stats`;
     `mv $outdir/*.coords $outdir/stats`;
