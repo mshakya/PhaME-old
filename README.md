@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/mshakya/PhaME.svg?branch=master)](https://travis-ci.org/mshakya/PhaME)
 
+[![codecov](https://codecov.io/gh/mshakya/PhaME/branch/master/graph/badge.svg)](https://codecov.io/gh/mshakya/PhaME)
+
 # Phylogenetic and Molecular Evolution (PhaME) analysis tool
 
 Given a reference and query genomes, PhaME extracts SNPs from complete genomes, draft genomes and/or reads.
