@@ -2,3 +2,8 @@ subprocess
 nose
 sphinx
 shlex==1.5.2
+os
+re
+itertools
+unittest
+cStringIO
