@@ -19,7 +19,8 @@ before_install:
   - export PATH=$HOME/miniconda/bin:$PATH
   - conda update --yes conda
   - conda info -a
-  - "cpanm Parallel::ForkManager"
+  - conda install -c bioconda perl-app-cpanminus=1.7039
+  - cpanm Parallel::ForkManager
 
 
 install:
