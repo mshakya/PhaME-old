@@ -1,9 +1,2 @@
-subprocess
-nose
-sphinx
-shlex==1.5.2
-os
-re
-itertools
-unittest
-cStringIO
+Sphinx==1.3.4
+argparse==1.1
