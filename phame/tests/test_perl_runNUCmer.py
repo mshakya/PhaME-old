@@ -9,7 +9,7 @@ import os
 class TestGeneCater(unittest.TestCase):
     """Test gene concatenation."""
 
-    def test_runucmer(self):
+    def setUp(self):
         """Test 1."""
         subprocess.call(["rm", "-rf", "phame/tests/runNUCmer_test"])
 
@@ -21,6 +21,7 @@ class TestGeneCater(unittest.TestCase):
                                "-l",
                                "phame/tests/files/fasta_filelist.txt", ])
         self.assertEqual(run, 0)
+        subprocess.call(["ls", "phame/tests/runNUCmer_test/snps"])
 
     def test_output_gaps(self):
         """Test gaps file."""
