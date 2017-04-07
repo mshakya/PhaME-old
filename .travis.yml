@@ -29,8 +29,7 @@ install:
   - conda install --yes -c bioconda mummer
 
 script:
-  - nosetests --with-coverage
-
+  - nosetests --with-coverage && coverage report && coverage xml
 after_success:
   - codecov
 
