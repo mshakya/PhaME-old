@@ -810,24 +810,24 @@ fi
 # fi
 
 
-echo "Checking HyPhy ..."
+# echo "Checking HyPhy ..."
 
-HyPhy_VER=`echo -e "1\n2\n3" | HYPHYMP  2>&1 | grep HYPHY | perl -nle 'print $& if m{\d+\.\d+}'`;
+# HyPhy_VER=`echo -e "1\n2\n3" | HYPHYMP  2>&1 | grep HYPHY | perl -nle 'print $& if m{\d+\.\d+}'`;
 
-if ( hash HYPHYMP 2>/dev/null ) && ( echo $HyPhy_VER | awk '{if($_>="2.2") exit 0; else exit 1}' )
-then
-   echo "HyPhy >=2.2 found.";
-else
-   echo "HyPhy >=2.2 not found. Trying to download from https://github.com/veg/hyphy/archive/2.2.7.zip...";
-   unzip $ROOTDIR/ext/opt/HyPhy_v227.zip -d $ROOTDIR/ext/;
-   cd $ROOTDIR/ext/hyphy-2.2.7;
-   cmake -DINSTALL_PREFIX=$ROOTDIR/thirdParty/miniconda/bin
-   make MP2 && make install
-   make GTEST
-   ./HYPHYGTEST
-   cd $ROOTDIR
-fi;
-done_message " Done." "";
+# if ( hash HYPHYMP 2>/dev/null ) && ( echo $HyPhy_VER | awk '{if($_>="2.2") exit 0; else exit 1}' )
+# then
+#    echo "HyPhy >=2.2 found.";
+# else
+#    echo "HyPhy >=2.2 not found. Trying to download from https://github.com/veg/hyphy/archive/2.2.7.zip...";
+#    unzip $ROOTDIR/ext/opt/HyPhy_v227.zip -d $ROOTDIR/ext/;
+#    cd $ROOTDIR/ext/hyphy-2.2.7;
+#    cmake -DINSTALL_PREFIX=$ROOTDIR/thirdParty/miniconda/bin
+#    make MP2 && make install
+#    make GTEST
+#    ./HYPHYGTEST
+#    cd $ROOTDIR
+# fi;
+# done_message " Done." "";
 
 
 
